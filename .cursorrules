@@ -1,0 +1,170 @@
+# Cursor Rules
+
+## Instructions
+
+- Record fixes for mistakes or corrections to avoid repetition in the `Lessons` section.
+- Organize thoughts and plan steps before starting a task in the `Scratchpad` section.
+- Clear old tasks if necessary.
+- Use todo markers for progress tracking:
+  - `[X]` Completed tasks
+  - `[ ]` Pending tasks
+- Update Scratchpad after completing subtasks.
+- Reflect and plan after milestones for better task management.
+- Always refer to Scratchpad before planning the next step.
+
+## Lessons
+
+## Scratchpad
+
+### Phase 1: Project Setup and Configuration
+[X] 1.1. Initial Setup
+    [X] Create new Next.js 15 project with TypeScript
+    [X] Configure ESLint and Prettier
+    [X] Set up project structure and folders
+    [X] Initialize Git repository
+
+[ ] 1.2. Dependencies Installation
+    [X] Install and configure Shadcn UI
+        [X] Add @shadcn/ui
+        [X] Initialize with `npx shadcn-ui@latest init`
+        [ ] Add essential components (button, card, form, input)
+        [ ] Configure theme
+    [X] Set up Lucide icons
+        [X] Add lucide-react package
+    [X] Install remaining core dependencies
+        [X] Add Zod for validation
+        [X] Add Zustand for state management
+        [X] Add Recharts for analytics
+        [X] Add Resend for emails
+        [X] Add Uploadthing for file uploads
+    [ ] Configure Tailwind CSS (partially done)
+        - Add remaining Tailwind plugins
+        - Configure theme extensions
+
+[ ] 1.3. Database and Authentication Setup
+    [ ] Set up PostgreSQL database
+        - Install and configure PostgreSQL
+        - Create database
+        - Set up connection string
+    [ ] Configure Prisma and create initial schema
+        - Install Prisma dependencies
+        - Initialize Prisma
+        - Create base schema
+    [ ] Implement NextAuth.js beta for authentication
+        - Install next-auth@beta
+        - Configure providers
+        - Set up authentication API
+    [ ] Set up email service with Resend
+        - Configure Resend API
+        - Create email templates
+        - Set up transactional emails
+
+### Phase 2: Core Features Development
+[ ] 2.1. User Authentication System
+    - Implement sign up/login flows
+    - Create user roles (admin, customer)
+    - Set up password reset functionality
+    - Implement OAuth providers
+
+[ ] 2.2. Product Management System
+    - Create product model and schema
+    - Implement product CRUD operations
+    - Set up product categories and tags
+    - Implement product search and filtering
+    - Add product image upload with Uploadthing
+
+[ ] 2.3. Shopping Cart System
+    - Implement cart functionality with Zustand
+    - Create cart persistence
+    - Add quantity management
+    - Implement cart total calculations
+
+[ ] 2.4. Checkout System
+    - Set up Stripe integration
+    - Create checkout flow
+    - Implement order processing
+    - Add payment confirmation
+    - Set up order notifications
+
+### Phase 3: Admin Dashboard Development
+[ ] 3.1. Admin Panel Setup
+    - Create admin layout
+    - Implement admin authentication
+    - Set up admin routes protection
+    - Create admin navigation
+
+[ ] 3.2. Dashboard Analytics
+    - Implement sales analytics with Recharts
+    - Create revenue reports
+    - Add user statistics
+    - Set up inventory tracking
+
+[ ] 3.3. Product Management Interface
+    - Create product listing interface
+    - Implement bulk operations
+    - Add product variant management
+    - Create inventory management system
+
+[ ] 3.4. Order Management System
+    - Create order tracking interface
+    - Implement order status management
+    - Add order filtering and search
+    - Create order reports
+
+### Phase 4: User Features and Experience
+[ ] 4.1. User Dashboard
+    - Create user profile management
+    - Implement order history
+    - Add wishlist functionality
+    - Create address management
+
+[ ] 4.2. Product Features
+    - Implement product reviews
+    - Add rating system
+    - Create product recommendations
+    - Implement product sharing
+
+### Phase 5: Advanced Features
+[ ] 5.1. Search and Filter
+    - Implement advanced search
+    - Add faceted filtering
+    - Create price range filter
+    - Implement sorting options
+
+[ ] 5.2. Performance Optimization
+    - Implement image optimization
+    - Add lazy loading
+    - Configure caching
+    - Optimize API routes
+
+[ ] 5.3. SEO and Marketing
+    - Implement SEO best practices
+    - Add sitemap generation
+    - Create meta tags
+    - Set up schema markup
+
+### Phase 6: Testing and Deployment
+[ ] 6.1. Testing
+    - Write unit tests
+    - Implement integration tests
+    - Perform E2E testing
+    - Conduct security testing
+
+[ ] 6.2. Deployment
+    - Set up CI/CD pipeline
+    - Configure production environment
+    - Deploy to production
+    - Monitor performance
+
+### Phase 7: Post-Launch
+[ ] 7.1. Monitoring and Maintenance
+    - Set up error tracking
+    - Implement analytics
+    - Create backup system
+    - Monitor performance metrics
+
+[ ] 7.2. Documentation
+    - Create API documentation
+    - Write user documentation
+    - Document admin processes
+    - Create maintenance guides
