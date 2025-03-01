@@ -42,3 +42,9 @@ Start from this step
 ## Prompt 5
 
 Implement core features start from home layout.
+
+
+Links 
+
+https://ui.shadcn.com/docs/installation/next
+

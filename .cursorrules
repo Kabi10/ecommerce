@@ -42,18 +42,18 @@
         - Configure theme extensions
 
 [ ] 1.3. Database and Authentication Setup
-    [ ] Set up PostgreSQL database
-        - Install and configure PostgreSQL
-        - Create database
-        - Set up connection string
-    [ ] Configure Prisma and create initial schema
-        - Install Prisma dependencies
-        - Initialize Prisma
-        - Create base schema
-    [ ] Implement NextAuth.js beta for authentication
-        - Install next-auth@beta
-        - Configure providers
-        - Set up authentication API
+    [X] Set up PostgreSQL database
+        [X] Install and configure PostgreSQL
+        [X] Create database
+        [X] Set up connection string
+    [X] Configure Prisma and create initial schema
+        [X] Install Prisma dependencies
+        [X] Initialize Prisma
+        [X] Create base schema
+    [X] Implement NextAuth.js beta for authentication
+        [X] Install next-auth@beta
+        [ ] Configure providers
+        [ ] Set up authentication API
     [ ] Set up email service with Resend
         - Configure Resend API
         - Create email templates
