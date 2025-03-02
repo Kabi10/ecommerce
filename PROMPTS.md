@@ -48,3 +48,4 @@ Links
 
 https://ui.shadcn.com/docs/installation/next
 
+https://authjs.dev/getting-started/installation?framework=next-js

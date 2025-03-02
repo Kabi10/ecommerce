@@ -11,8 +11,28 @@
 - Update Scratchpad after completing subtasks.
 - Reflect and plan after milestones for better task management.
 - Always refer to Scratchpad before planning the next step.
+- ALWAYS CHECK FOR EXISTING FILES BEFORE CREATING NEW ONES TO AVOID DUPLICATES.
 
 ## Lessons
+
+1. Use `npx shadcn@latest add [component]` instead of `npx shadcn-ui@latest add [component]` when installing Shadcn UI components.
+2. In Next.js 14+, page props params must be typed as a Promise.
+3. Use `const session = await auth()` instead of `const session = await getServerSession(authOptions)` for Next.js authentication.
+4. When importing `useRouter` from 'next/navigation', the component must be marked as a client component using the `'use client'` directive.
+5. Always check for existing files and functionality before creating new ones to avoid duplication.
+6. When using Prisma's Decimal type with TypeScript, convert it to a number using `Number(price)` to match the expected type.
+7. When dealing with nullable fields from the database, update the TypeScript interfaces to reflect this with union types (e.g., `string | null`).
+8. In Next.js 15, components using `useSearchParams()` must be:
+   - Marked with `'use client'`
+   - Wrapped in a Suspense boundary
+   - Preferably isolated in their own component for better control
+9. For client-side navigation components that need search params, prefer passing them as props from the server component instead of using `useSearchParams()` directly.
+10. When using dynamic imports with `next/dynamic`, set `ssr: false` for client-only components that use browser APIs.
+11. When using client-side state (like Zustand stores) in components that can be server-rendered:
+    - Extract client-side state display into separate client components
+    - Use dynamic imports with `ssr: false` for components that depend on client state
+    - Provide loading fallbacks that match the component's structure
+    - Wrap client components in Suspense boundaries
 
 ## Scratchpad
 
@@ -23,148 +43,156 @@
     [X] Set up project structure and folders
     [X] Initialize Git repository
 
-[ ] 1.2. Dependencies Installation
+[X] 1.2. Dependencies Installation
     [X] Install and configure Shadcn UI
-        [X] Add @shadcn/ui
-        [X] Initialize with `npx shadcn-ui@latest init`
-        [ ] Add essential components (button, card, form, input)
-        [ ] Configure theme
     [X] Set up Lucide icons
-        [X] Add lucide-react package
     [X] Install remaining core dependencies
         [X] Add Zod for validation
         [X] Add Zustand for state management
         [X] Add Recharts for analytics
         [X] Add Resend for emails
         [X] Add Uploadthing for file uploads
-    [ ] Configure Tailwind CSS (partially done)
-        - Add remaining Tailwind plugins
-        - Configure theme extensions
+    [X] Configure Tailwind CSS
+        [X] Add remaining Tailwind plugins
+        [X] Configure theme extensions
 
-[ ] 1.3. Database and Authentication Setup
+[X] 1.3. Database and Authentication Setup
     [X] Set up PostgreSQL database
-        [X] Install and configure PostgreSQL
-        [X] Create database
-        [X] Set up connection string
     [X] Configure Prisma and create initial schema
-        [X] Install Prisma dependencies
-        [X] Initialize Prisma
-        [X] Create base schema
     [X] Implement NextAuth.js beta for authentication
-        [X] Install next-auth@beta
-        [ ] Configure providers
-        [ ] Set up authentication API
     [ ] Set up email service with Resend
-        - Configure Resend API
-        - Create email templates
-        - Set up transactional emails
 
 ### Phase 2: Core Features Development
-[ ] 2.1. User Authentication System
-    - Implement sign up/login flows
-    - Create user roles (admin, customer)
-    - Set up password reset functionality
-    - Implement OAuth providers
+[X] 2.1. Products Catalog
+    [X] Products listing page with filters and search
+        [X] Implement product grid layout
+        [X] Add search functionality
+        [X] Add category filtering
+        [X] Add price range filtering
+        [X] Implement pagination with proper Suspense boundaries
+        [X] Add loading skeletons
+    [X] Product detail pages with image gallery
+        [X] Create product detail layout
+        [X] Implement image gallery
+        [X] Add product information section
+        [X] Handle decimal price formatting
+    [X] Reviews and ratings section
+        [X] Display review list
+        [X] Show average rating
+        [X] Handle nullable review fields
+        [X] Add star rating display
+    [X] Related products section
+        [X] Fetch related products by category
+        [X] Display related products grid
+        [X] Add hover effects and transitions
 
-[ ] 2.2. Product Management System
-    - Create product model and schema
-    - Implement product CRUD operations
-    - Set up product categories and tags
-    - Implement product search and filtering
-    - Add product image upload with Uploadthing
+[X] 2.2. Shopping Cart System
+    [X] Create cart store with Zustand
+    [X] Implement add/remove functionality
+    [X] Cart persistence
+    [X] Quantity management
+    [X] Cart total calculations
 
-[ ] 2.3. Shopping Cart System
-    - Implement cart functionality with Zustand
-    - Create cart persistence
-    - Add quantity management
-    - Implement cart total calculations
+[ ] 2.3. User Authentication
+    [ ] Sign up/login flows
+    [ ] User roles (admin, customer)
+    [ ] Password reset functionality
+    [ ] OAuth providers integration
 
-[ ] 2.4. Checkout System
-    - Set up Stripe integration
-    - Create checkout flow
-    - Implement order processing
-    - Add payment confirmation
-    - Set up order notifications
+[ ] 2.4. Checkout Process
+    [ ] Shipping information form
+    [ ] Payment integration (Stripe)
+    [ ] Order confirmation
+    [ ] Email notifications
 
 ### Phase 3: Admin Dashboard Development
 [ ] 3.1. Admin Panel Setup
-    - Create admin layout
-    - Implement admin authentication
-    - Set up admin routes protection
-    - Create admin navigation
+    [ ] Create admin layout
+    [ ] Implement admin authentication
+    [ ] Set up admin routes protection
+    [ ] Create admin navigation
 
 [ ] 3.2. Dashboard Analytics
-    - Implement sales analytics with Recharts
-    - Create revenue reports
-    - Add user statistics
-    - Set up inventory tracking
+    [ ] Key Metrics Cards
+        [ ] Total revenue widget
+        [ ] Total orders widget
+        [ ] Total customers widget
+        [ ] Average order value widget
+    [ ] Sales Analytics
+        [ ] Revenue Chart
+        [ ] Order Statistics
+    [ ] Recent Orders Table
+    [ ] Low Stock Alerts
+    [ ] Top Products
+    [ ] Customer Insights
+    [ ] Real-time Updates
+    [ ] Export and Reports
 
 [ ] 3.3. Product Management Interface
-    - Create product listing interface
-    - Implement bulk operations
-    - Add product variant management
-    - Create inventory management system
+    [ ] Create product listing interface
+    [ ] Implement bulk operations
+    [ ] Add product variant management
+    [ ] Create inventory management system
 
 [ ] 3.4. Order Management System
-    - Create order tracking interface
-    - Implement order status management
-    - Add order filtering and search
-    - Create order reports
+    [ ] Create order tracking interface
+    [ ] Implement order status management
+    [ ] Add order filtering and search
+    [ ] Create order reports
 
 ### Phase 4: User Features and Experience
 [ ] 4.1. User Dashboard
-    - Create user profile management
-    - Implement order history
-    - Add wishlist functionality
-    - Create address management
+    [ ] Create user profile management
+    [ ] Implement order history
+    [ ] Add wishlist functionality
+    [ ] Create address management
 
 [ ] 4.2. Product Features
-    - Implement product reviews
-    - Add rating system
-    - Create product recommendations
-    - Implement product sharing
+    [ ] Add ability to write reviews
+    [ ] Implement product sharing
+    [ ] Create product recommendations
 
 ### Phase 5: Advanced Features
 [ ] 5.1. Search and Filter
-    - Implement advanced search
-    - Add faceted filtering
-    - Create price range filter
-    - Implement sorting options
+    [ ] Implement advanced search
+    [ ] Add faceted filtering
+    [ ] Create price range filter
+    [ ] Implement sorting options
 
 [ ] 5.2. Performance Optimization
-    - Implement image optimization
-    - Add lazy loading
-    - Configure caching
-    - Optimize API routes
+    [ ] Implement image optimization
+    [ ] Add lazy loading
+    [ ] Configure caching
+    [ ] Optimize API routes
 
 [ ] 5.3. SEO and Marketing
-    - Implement SEO best practices
-    - Add sitemap generation
-    - Create meta tags
-    - Set up schema markup
+    [ ] Implement SEO best practices
+    [ ] Add sitemap generation
+    [ ] Create meta tags
+    [ ] Set up schema markup
 
 ### Phase 6: Testing and Deployment
 [ ] 6.1. Testing
-    - Write unit tests
-    - Implement integration tests
-    - Perform E2E testing
-    - Conduct security testing
+    [ ] Write unit tests
+    [ ] Implement integration tests
+    [ ] Perform E2E testing
+    [ ] Conduct security testing
 
 [ ] 6.2. Deployment
-    - Set up CI/CD pipeline
-    - Configure production environment
-    - Deploy to production
-    - Monitor performance
+    [ ] Set up CI/CD pipeline
+    [ ] Configure production environment
+    [ ] Deploy to production
+    [ ] Monitor performance
 
 ### Phase 7: Post-Launch
 [ ] 7.1. Monitoring and Maintenance
-    - Set up error tracking
-    - Implement analytics
-    - Create backup system
-    - Monitor performance metrics
+    [ ] Set up error tracking
+    [ ] Implement analytics
+    [ ] Create backup system
+    [ ] Monitor performance metrics
 
 [ ] 7.2. Documentation
-    - Create API documentation
-    - Write user documentation
-    - Document admin processes
-    - Create maintenance guides
+    [ ] Create API documentation
+    [ ] Write user documentation
+    [ ] Document admin processes
+    [ ] Create maintenance guides

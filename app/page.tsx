@@ -1,101 +1,172 @@
-import Image from "next/image";
+import Link from 'next/link'
+import Image from 'next/image'
+import { PrismaClient } from '@prisma/client'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { ArrowRight, ShoppingCart, Tag, Truck } from 'lucide-react'
+import { getHeroImage, getCategoryImage, getProductImage } from '@/lib/image-utils'
 
-export default function Home() {
+const prisma = new PrismaClient()
+
+async function getHomePageData() {
+  const categories = await prisma.category.findMany({
+    take: 4,
+  })
+
+  const featuredProducts = await prisma.product.findMany({
+    take: 4,
+    include: {
+      category: true,
+      reviews: {
+        select: {
+          rating: true,
+        },
+      },
+    },
+  })
+
+  return {
+    categories: categories.map(category => ({
+      ...category,
+      image: getCategoryImage(category.name)
+    })),
+    featuredProducts: featuredProducts.map(product => ({
+      ...product,
+      images: [getProductImage(product.name)],
+      averageRating: product.reviews.length > 0
+        ? product.reviews.reduce((acc, review) => acc + review.rating, 0) / product.reviews.length
+        : 0,
+    })),
+  }
+}
+
+export default async function Home() {
+  const { categories, featuredProducts } = await getHomePageData()
+  const heroImage = getHeroImage()
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <main>
+      {/* Hero Section */}
+      <section className="relative h-[600px] flex items-center justify-center bg-gray-900 text-white">
+        <div className="absolute inset-0 overflow-hidden">
+          <Image
+            src={heroImage}
+            alt="Hero background"
+            fill
+            className="object-cover opacity-50"
+            priority
+          />
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
+        <div className="relative z-10 text-center space-y-6 max-w-4xl mx-auto px-4">
+          <h1 className="text-5xl font-bold">Your One-Stop Shop for Everything</h1>
+          <p className="text-xl">Discover amazing products at unbeatable prices</p>
+          <Button size="lg" asChild>
+            <Link href="/products">
+              Shop Now <ArrowRight className="ml-2" />
+            </Link>
+          </Button>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="py-16 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="flex items-center space-x-4">
+              <Truck className="h-8 w-8 text-primary" />
+              <div>
+                <h3 className="font-semibold">Free Shipping</h3>
+                <p className="text-sm text-gray-600">On orders over $100</p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-4">
+              <ShoppingCart className="h-8 w-8 text-primary" />
+              <div>
+                <h3 className="font-semibold">Secure Shopping</h3>
+                <p className="text-sm text-gray-600">100% secure payment</p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-4">
+              <Tag className="h-8 w-8 text-primary" />
+              <div>
+                <h3 className="font-semibold">Best Prices</h3>
+                <p className="text-sm text-gray-600">Price match guarantee</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Categories Section */}
+      <section className="py-16">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex justify-between items-center mb-8">
+            <h2 className="text-3xl font-bold">Shop by Category</h2>
+            <Button variant="outline" asChild>
+              <Link href="/categories">View All Categories</Link>
+            </Button>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {categories.map((category) => (
+              <Link key={category.id} href={`/categories/${category.id}`}>
+                <Card className="hover:shadow-lg transition-shadow">
+                  <CardHeader>
+                    <div className="relative h-48 w-full">
+                      <Image
+                        src={category.image}
+                        alt={category.name}
+                        fill
+                        className="object-cover rounded-t-lg"
+                      />
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <CardTitle>{category.name}</CardTitle>
+                  </CardContent>
+                </Card>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Featured Products Section */}
+      <section className="py-16 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex justify-between items-center mb-8">
+            <h2 className="text-3xl font-bold">Featured Products</h2>
+            <Button variant="outline" asChild>
+              <Link href="/products">View All Products</Link>
+            </Button>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {featuredProducts.map((product) => (
+              <Card key={product.id} className="hover:shadow-lg transition-shadow">
+                <CardHeader>
+                  <div className="relative h-48 w-full">
+                    <Image
+                      src={product.images[0]}
+                      alt={product.name}
+                      fill
+                      className="object-cover rounded-t-lg"
+                    />
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-sm text-gray-500 mb-2">{product.category.name}</div>
+                  <CardTitle className="line-clamp-1">{product.name}</CardTitle>
+                  <div className="mt-2 text-lg font-bold">${product.price.toString()}</div>
+                </CardContent>
+                <CardFooter>
+                  <Button className="w-full" asChild>
+                    <Link href={`/products/${product.id}`}>View Details</Link>
+                  </Button>
+                </CardFooter>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+    </main>
+  )
 }
