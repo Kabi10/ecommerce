@@ -8,6 +8,7 @@ import { Slider } from '@/components/ui/slider'
 import { Checkbox } from '@/components/ui/checkbox'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Search, SlidersHorizontal } from 'lucide-react'
+import { Suspense } from 'react'
 
 interface Category {
   id: string
@@ -18,7 +19,7 @@ interface FilterProps {
   categories: Category[]
 }
 
-function ProductFilters({ categories }: FilterProps) {
+function ProductFiltersContent({ categories }: FilterProps) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -162,6 +163,14 @@ function ProductFilters({ categories }: FilterProps) {
         )}
       </div>
     </>
+  )
+}
+
+function ProductFilters(props: FilterProps) {
+  return (
+    <Suspense>
+      <ProductFiltersContent {...props} />
+    </Suspense>
   )
 }
 

@@ -1,0 +1,372 @@
+warning: in the working copy of 'app/globals.css', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'package-lock.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'package.json', LF will be replaced by CRLF the next time Git touches it
+[1mdiff --git a/.eslintrc.json b/.eslintrc.json[m
+[1mindex e94b6d2..49e4b62 100644[m
+[1m--- a/.eslintrc.json[m
+[1m+++ b/.eslintrc.json[m
+[36m@@ -1,6 +1,3 @@[m
+ {[m
+[31m-  "extends": ["next/core-web-vitals", "eslint:recommended"],[m
+[31m-  "rules": {[m
+[31m-    "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }][m
+[31m-  }[m
+[32m+[m[32m  "extends": "next/core-web-vitals"[m
+ } [m
+\ No newline at end of file[m
+[1mdiff --git a/app/globals.css b/app/globals.css[m
+[1mindex 638624d..6daca50 100644[m
+[1m--- a/app/globals.css[m
+[1m+++ b/app/globals.css[m
+[36m@@ -1,4 +1,6 @@[m
+[31m-@import "tailwindcss";[m
+[32m+[m[32m@tailwind base;[m
+[32m+[m[32m@tailwind components;[m
+[32m+[m[32m@tailwind utilities;[m
+ [m
+ @plugin "tailwindcss-animate";[m
+ [m
+[36m@@ -9,75 +11,85 @@[m
+   --font-mono: var(--font-geist-mono);[m
+ }[m
+ [m
+[31m-:root {[m
+[31m-  --background: oklch(1 0 0);[m
+[31m-  --foreground: oklch(0.13 0.028 261.692);[m
+[31m-  --card: oklch(1 0 0);[m
+[31m-  --card-foreground: oklch(0.13 0.028 261.692);[m
+[31m-  --popover: oklch(1 0 0);[m
+[31m-  --popover-foreground: oklch(0.13 0.028 261.692);[m
+[31m-  --primary: oklch(0.21 0.034 264.665);[m
+[31m-  --primary-foreground: oklch(0.985 0.002 247.839);[m
+[31m-  --secondary: oklch(0.967 0.003 264.542);[m
+[31m-  --secondary-foreground: oklch(0.21 0.034 264.665);[m
+[31m-  --muted: oklch(0.967 0.003 264.542);[m
+[31m-  --muted-foreground: oklch(0.551 0.027 264.364);[m
+[31m-  --accent: oklch(0.967 0.003 264.542);[m
+[31m-  --accent-foreground: oklch(0.21 0.034 264.665);[m
+[31m-  --destructive: oklch(0.577 0.245 27.325);[m
+[31m-  --destructive-foreground: oklch(0.577 0.245 27.325);[m
+[31m-  --border: oklch(0.928 0.006 264.531);[m
+[31m-  --input: oklch(0.928 0.006 264.531);[m
+[31m-  --ring: oklch(0.707 0.022 261.325);[m
+[31m-  --chart-1: oklch(0.646 0.222 41.116);[m
+[31m-  --chart-2: oklch(0.6 0.118 184.704);[m
+[31m-  --chart-3: oklch(0.398 0.07 227.392);[m
+[31m-  --chart-4: oklch(0.828 0.189 84.429);[m
+[31m-  --chart-5: oklch(0.769 0.188 70.08);[m
+[31m-  --radius: 0.625rem;[m
+[31m-  --sidebar: oklch(0.985 0.002 247.839);[m
+[31m-  --sidebar-foreground: oklch(0.13 0.028 261.692);[m
+[31m-  --sidebar-primary: oklch(0.21 0.034 264.665);[m
+[31m-  --sidebar-primary-foreground: oklch(0.985 0.002 247.839);[m
+[31m-  --sidebar-accent: oklch(0.967 0.003 264.542);[m
+[31m-  --sidebar-accent-foreground: oklch(0.21 0.034 264.665);[m
+[31m-  --sidebar-border: oklch(0.928 0.006 264.531);[m
+[31m-  --sidebar-ring: oklch(0.707 0.022 261.325);[m
+[31m-}[m
+[32m+[m[32m@layer base {[m
+[32m+[m[32m  :root {[m
+[32m+[m[32m    --background: oklch(1 0 0);[m
+[32m+[m[32m    --foreground: oklch(0.13 0.028 261.692);[m
+[32m+[m[32m    --card: oklch(1 0 0);[m
+[32m+[m[32m    --card-foreground: oklch(0.13 0.028 261.692);[m
+[32m+[m[32m    --popover: oklch(1 0 0);[m
+[32m+[m[32m    --popover-foreground: oklch(0.13 0.028 261.692);[m
+[32m+[m[32m    --primary: oklch(0.21 0.034 264.665);[m
+[32m+[m[32m    --primary-foreground: oklch(0.985 0.002 247.839);[m
+[32m+[m[32m    --secondary: oklch(0.967 0.003 264.542);[m
+[32m+[m[32m    --secondary-foreground: oklch(0.21 0.034 264.665);[m
+[32m+[m[32m    --muted: oklch(0.967 0.003 264.542);[m
+[32m+[m[32m    --muted-foreground: oklch(0.551 0.027 264.364);[m
+[32m+[m[32m    --accent: oklch(0.967 0.003 264.542);[m
+[32m+[m[32m    --accent-foreground: oklch(0.21 0.034 264.665);[m
+[32m+[m[32m    --destructive: oklch(0.577 0.245 27.325);[m
+[32m+[m[32m    --destructive-foreground: oklch(0.577 0.245 27.325);[m
+[32m+[m[32m    --border: oklch(0.928 0.006 264.531);[m
+[32m+[m[32m    --input: oklch(0.928 0.006 264.531);[m
+[32m+[m[32m    --ring: oklch(0.707 0.022 261.325);[m
+[32m+[m[32m    --radius: 0.625rem;[m
+[32m+[m[32m    --chart-1: oklch(0.646 0.222 41.116);[m
+[32m+[m[32m    --chart-2: oklch(0.6 0.118 184.704);[m
+[32m+[m[32m    --chart-3: oklch(0.398 0.07 227.392);[m
+[32m+[m[32m    --chart-4: oklch(0.828 0.189 84.429);[m
+[32m+[m[32m    --chart-5: oklch(0.769 0.188 70.08);[m
+[32m+[m[32m    --sidebar: oklch(0.985 0.002 247.839);[m
+[32m+[m[32m    --sidebar-foreground: oklch(0.13 0.028 261.692);[m
+[32m+[m[32m    --sidebar-primary: oklch(0.21 0.034 264.665);[m
+[32m+[m[32m    --sidebar-primary-foreground: oklch(0.985 0.002 247.839);[m
+[32m+[m[32m    --sidebar-accent: oklch(0.967 0.003 264.542);[m
+[32m+[m[32m    --sidebar-accent-foreground: oklch(0.21 0.034 264.665);[m
+[32m+[m[32m    --sidebar-border: oklch(0.928 0.006 264.531);[m
+[32m+[m[32m    --sidebar-ring: oklch(0.707 0.022 261.325);[m
+[32m+[m[32m  }[m
+[32m+[m
+[32m+[m[32m  .dark {[m
+[32m+[m[32m    --background: oklch(0.13 0.028 261.692);[m
+[32m+[m[32m    --foreground: oklch(0.985 0.002 247.839);[m
+[32m+[m[32m    --card: oklch(0.13 0.028 261.692);[m
+[32m+[m[32m    --card-foreground: oklch(0.985 0.002 247.839);[m
+[32m+[m[32m    --popover: oklch(0.13 0.028 261.692);[m
+[32m+[m[32m    --popover-foreground: oklch(0.985 0.002 247.839);[m
+[32m+[m[32m    --primary: oklch(0.985 0.002 247.839);[m
+[32m+[m[32m    --primary-foreground: oklch(0.21 0.034 264.665);[m
+[32m+[m[32m    --secondary: oklch(0.278 0.033 256.848);[m
+[32m+[m[32m    --secondary-foreground: oklch(0.985 0.002 247.839);[m
+[32m+[m[32m    --muted: oklch(0.278 0.033 256.848);[m
+[32m+[m[32m    --muted-foreground: oklch(0.707 0.022 261.325);[m
+[32m+[m[32m    --accent: oklch(0.278 0.033 256.848);[m
+[32m+[m[32m    --accent-foreground: oklch(0.985 0.002 247.839);[m
+[32m+[m[32m    --destructive: oklch(0.396 0.141 25.723);[m
+[32m+[m[32m    --destructive-foreground: oklch(0.637 0.237 25.331);[m
+[32m+[m[32m    --border: oklch(0.278 0.033 256.848);[m
+[32m+[m[32m    --input: oklch(0.278 0.033 256.848);[m
+[32m+[m[32m    --ring: oklch(0.446 0.03 256.802);[m
+[32m+[m[32m    --chart-1: oklch(0.488 0.243 264.376);[m
+[32m+[m[32m    --chart-2: oklch(0.696 0.17 162.48);[m
+[32m+[m[32m    --chart-3: oklch(0.769 0.188 70.08);[m
+[32m+[m[32m    --chart-4: oklch(0.627 0.265 303.9);[m
+[32m+[m[32m    --chart-5: oklch(0.645 0.246 16.439);[m
+[32m+[m[32m    --sidebar: oklch(0.21 0.034 264.665);[m
+[32m+[m[32m    --sidebar-foreground: oklch(0.985 0.002 247.839);[m
+[32m+[m[32m    --sidebar-primary: oklch(0.488 0.243 264.376);[m
+[32m+[m[32m    --sidebar-primary-foreground: oklch(0.985 0.002 247.839);[m
+[32m+[m[32m    --sidebar-accent: oklch(0.278 0.033 256.848);[m
+[32m+[m[32m    --sidebar-accent-foreground: oklch(0.985 0.002 247.839);[m
+[32m+[m[32m    --sidebar-border: oklch(0.278 0.033 256.848);[m
+[32m+[m[32m    --sidebar-ring: oklch(0.446 0.03 256.802);[m
+[32m+[m[32m  }[m
+ [m
+[31m-.dark {[m
+[31m-  --background: oklch(0.13 0.028 261.692);[m
+[31m-  --foreground: oklch(0.985 0.002 247.839);[m
+[31m-  --card: oklch(0.13 0.028 261.692);[m
+[31m-  --card-foreground: oklch(0.985 0.002 247.839);[m
+[31m-  --popover: oklch(0.13 0.028 261.692);[m
+[31m-  --popover-foreground: oklch(0.985 0.002 247.839);[m
+[31m-  --primary: oklch(0.985 0.002 247.839);[m
+[31m-  --primary-foreground: oklch(0.21 0.034 264.665);[m
+[31m-  --secondary: oklch(0.278 0.033 256.848);[m
+[31m-  --secondary-foreground: oklch(0.985 0.002 247.839);[m
+[31m-  --muted: oklch(0.278 0.033 256.848);[m
+[31m-  --muted-foreground: oklch(0.707 0.022 261.325);[m
+[31m-  --accent: oklch(0.278 0.033 256.848);[m
+[31m-  --accent-foreground: oklch(0.985 0.002 247.839);[m
+[31m-  --destructive: oklch(0.396 0.141 25.723);[m
+[31m-  --destructive-foreground: oklch(0.637 0.237 25.331);[m
+[31m-  --border: oklch(0.278 0.033 256.848);[m
+[31m-  --input: oklch(0.278 0.033 256.848);[m
+[31m-  --ring: oklch(0.446 0.03 256.802);[m
+[31m-  --chart-1: oklch(0.488 0.243 264.376);[m
+[31m-  --chart-2: oklch(0.696 0.17 162.48);[m
+[31m-  --chart-3: oklch(0.769 0.188 70.08);[m
+[31m-  --chart-4: oklch(0.627 0.265 303.9);[m
+[31m-  --chart-5: oklch(0.645 0.246 16.439);[m
+[31m-  --sidebar: oklch(0.21 0.034 264.665);[m
+[31m-  --sidebar-foreground: oklch(0.985 0.002 247.839);[m
+[31m-  --sidebar-primary: oklch(0.488 0.243 264.376);[m
+[31m-  --sidebar-primary-foreground: oklch(0.985 0.002 247.839);[m
+[31m-  --sidebar-accent: oklch(0.278 0.033 256.848);[m
+[31m-  --sidebar-accent-foreground: oklch(0.985 0.002 247.839);[m
+[31m-  --sidebar-border: oklch(0.278 0.033 256.848);[m
+[31m-  --sidebar-ring: oklch(0.446 0.03 256.802);[m
+[32m+[m[32m  * {[m
+[32m+[m[32m    @apply border-border;[m
+[32m+[m[32m  }[m
+[32m+[m
+[32m+[m[32m  body {[m
+[32m+[m[32m    @apply bg-background text-foreground;[m
+[32m+[m[32m  }[m
+ }[m
+ [m
+ @theme inline {[m
+[36m@@ -118,12 +130,3 @@[m
+   --color-sidebar-border: var(--sidebar-border);[m
+   --color-sidebar-ring: var(--sidebar-ring);[m
+ }[m
+[31m-[m
+[31m-@layer base {[m
+[31m-  * {[m
+[31m-    @apply border-border outline-ring/50;[m
+[31m-  }[m
+[31m-  body {[m
+[31m-    @apply bg-background text-foreground;[m
+[31m-  }[m
+[31m-}[m
+[1mdiff --git a/app/products/layout.tsx b/app/products/layout.tsx[m
+[1mindex 2461f0a..cbf6409 100644[m
+[1m--- a/app/products/layout.tsx[m
+[1m+++ b/app/products/layout.tsx[m
+[36m@@ -8,6 +8,7 @@[m [mimport { Slider } from '@/components/ui/slider'[m
+ import { Checkbox } from '@/components/ui/checkbox'[m
+ import { ScrollArea } from '@/components/ui/scroll-area'[m
+ import { Search, SlidersHorizontal } from 'lucide-react'[m
+[32m+[m[32mimport { Suspense } from 'react'[m
+ [m
+ interface Category {[m
+   id: string[m
+[36m@@ -18,7 +19,7 @@[m [minterface FilterProps {[m
+   categories: Category[][m
+ }[m
+ [m
+[31m-function ProductFilters({ categories }: FilterProps) {[m
+[32m+[m[32mfunction ProductFiltersContent({ categories }: FilterProps) {[m
+   const router = useRouter()[m
+   const pathname = usePathname()[m
+   const searchParams = useSearchParams()[m
+[36m@@ -165,6 +166,14 @@[m [mfunction ProductFilters({ categories }: FilterProps) {[m
+   )[m
+ }[m
+ [m
+[32m+[m[32mfunction ProductFilters(props: FilterProps) {[m
+[32m+[m[32m  return ([m
+[32m+[m[32m    <Suspense>[m
+[32m+[m[32m      <ProductFiltersContent {...props} />[m
+[32m+[m[32m    </Suspense>[m
+[32m+[m[32m  )[m
+[32m+[m[32m}[m
+[32m+[m
+ export default function ProductsLayout({[m
+   children,[m
+ }: {[m
+[1mdiff --git a/app/products/pagination.tsx b/app/products/pagination.tsx[m
+[1mindex bc38050..07e7603 100644[m
+[1m--- a/app/products/pagination.tsx[m
+[1m+++ b/app/products/pagination.tsx[m
+[36m@@ -1,6 +1,8 @@[m
+ 'use client'[m
+ [m
+ import Link from 'next/link'[m
+[32m+[m[32mimport { useSearchParams } from 'next/navigation'[m
+[32m+[m[32mimport { Suspense } from 'react'[m
+ [m
+ interface PaginationProps {[m
+   totalPages: number[m
+[36m@@ -8,7 +10,9 @@[m [minterface PaginationProps {[m
+   searchParams: Record<string, string | string[]>[m
+ }[m
+ [m
+[31m-export default function Pagination({ totalPages, currentPage, searchParams }: PaginationProps) {[m
+[32m+[m[32mfunction PaginationContent({ totalPages, currentPage, searchParams }: PaginationProps) {[m
+[32m+[m[32m  const searchParamsObj = useSearchParams()[m
+[32m+[m[41m  [m
+   if (totalPages <= 1) return null[m
+ [m
+   return ([m
+[36m@@ -39,4 +43,12 @@[m [mexport default function Pagination({ totalPages, currentPage, searchParams }: Pa[m
+       })}[m
+     </div>[m
+   )[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m[32mexport default function Pagination(props: PaginationProps) {[m
+[32m+[m[32m  return ([m
+[32m+[m[32m    <Suspense>[m
+[32m+[m[32m      <PaginationContent {...props} />[m
+[32m+[m[32m    </Suspense>[m
+[32m+[m[32m  )[m
+ } [m
+\ No newline at end of file[m
+[1mdiff --git a/package-lock.json b/package-lock.json[m
+[1mindex cd6ab7c..2e3d3dc 100644[m
+[1m--- a/package-lock.json[m
+[1m+++ b/package-lock.json[m
+[36m@@ -40,14 +40,14 @@[m
+         "zustand": "^5.0.3"[m
+       },[m
+       "devDependencies": {[m
+[31m-        "@eslint/eslintrc": "^3",[m
+[31m-        "@tailwindcss/postcss": "^4",[m
+         "@types/node": "^20",[m
+         "@types/react": "^19",[m
+         "@types/react-dom": "^19",[m
+[31m-        "eslint": "^9",[m
+[32m+[m[32m        "autoprefixer": "^10.4.18",[m
+[32m+[m[32m        "eslint": "^8.57.0",[m
+         "eslint-config-next": "15.2.0",[m
+[31m-        "tailwindcss": "^4",[m
+[32m+[m[32m        "postcss": "^8.4.35",[m
+[32m+[m[32m        "tailwindcss": "^3.4.1",[m
+         "ts-node": "^10.9.2",[m
+         "typescript": "^5"[m
+       }[m
+[36m@@ -56,7 +56,6 @@[m
+       "version": "5.2.0",[m
+       "resolved": "https://registry.npmjs.org/@alloc/quick-lru/-/quick-lru-5.2.0.tgz",[m
+       "integrity": "sha512-UrcABB+4bUrFABwbluTIBErXwvbsU/V7TZWfmbgJfbkwiBuziS9gxdODUyuiecfdGQ85jglMW6juS3+z5TsKLw==",[m
+[31m-      "dev": true,[m
+       "license": "MIT",[m
+       "engines": {[m
+         "node": ">=10"[m
+[36m@@ -112,7 +111,7 @@[m
+       "version": "0.8.1",[m
+       "resolved": "https://registry.npmjs.org/@cspotcode/source-map-support/-/source-map-support-0.8.1.tgz",[m
+       "integrity": "sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==",[m
+[31m-      "dev": true,[m
+[32m+[m[32m      "devOptional": true,[m
+       "license": "MIT",[m
+       "dependencies": {[m
+         "@jridgewell/trace-mapping": "0.3.9"[m
+[36m@@ -192,45 +191,17 @@[m
+         "node": "^12.0.0 || ^14.0.0 || >=16.0.0"[m
+       }[m
+     },[m
+[31m-    "node_modules/@eslint/config-array": {[m
+[31m-      "version": "0.19.2",[m
+[31m-      "resolved": "https://registry.npmjs.org/@eslint/config-array/-/config-array-0.19.2.tgz",[m
+[31m-      "integrity": "sha512-GNKqxfHG2ySmJOBSHg7LxeUx4xpuCoFjacmlCoYWEbaPXLwvfIjixRI12xCQZeULksQb23uiA8F40w5TojpV7w==",[m
+[31m-      "dev": true,[m
+[31m-      "license": "Apache-2.0",[m
+[31m-      "dependencies": {[m
+[31m-        "@eslint/object-schema": "^2.1.6",[m
+[31m-        "debug": "^4.3.1",[m
+[31m-        "minimatch": "^3.1.2"[m
+[31m-      },[m
+[31m-      "engines": {[m
+[31m-        "node": "^18.18.0 || ^20.9.0 || >=21.1.0"[m
+[31m-      }[m
+[31m-    },[m
+[31m-    "node_modules/@eslint/core": {[m
+[31m-      "version": "0.12.0",[m
+[31m-      "resolved": "https://registry.npmjs.org/@eslint/core/-/core-0.12.0.tgz",[m
+[31m-      "integrity": "sha512-cmrR6pytBuSMTaBweKoGMwu3EiHiEC+DoyupPmlZ0HxBJBtIxwe+j/E4XPIKNx+Q74c8lXKPwYawBf5glsTkHg==",[m
+[31m-      "dev": true,[m
+[31m-      "license": "Apache-2.0",[m
+[31m-      "dependencies": {[m
+[31m-        "@types/json-schema": "^7.0.15"[m
+[31m-      },[m
+[31m-      "engines": {[m
+[31m-        "node": "^18.18.0 || ^20.9.0 || >=21.1.0"[m
+[31m-      }[m
+[31m-    },[m
+     "node_modules/@eslint/eslintrc": {[m
+[31m-      "version": "3.3.0",[m
+[31m-      "resolved": "https://registry.npmjs.org/@eslint/eslintrc/-/eslintrc-3.3.0.tgz",[m
+[31m-      "integrity": "sha512-yaVPAiNAalnCZedKLdR21GOGILMLKPyqSLWaAjQFvYA2i/ciDi8ArYVr69Anohb6cH2Ukhqti4aFnYyPm8wdwQ==",[m
+[32m+[m[32m      "version": "2.1.4",[m
+[32m+[m[32m      "resolved": "https://registry.npmjs.org/@eslint/eslintrc/-/eslintrc-2.1.4.tgz",[m
+[32m+[m[32m      "integrity": "sha512-269Z39MS6wVJtsoUl10L60WdkhJVdPG24Q4eZTH3nnF6lpvSShEK3wQjDX9JRWAUPvPh7COouPpU9IrqaZFvtQ==",[m
+       "dev": true,[m
+       "license": "MIT",[m
+       "dependencies": {[m
+         "ajv": "^6.12.4",[m
+         "debug": "^4.3.2",[m
+[31m-        "espree": "^10.0.1",[m
+[31m-        "globals": "^14.0.0",[m
+[32m+[m[32m        "espree": "^9.6.0",[m
+[32m+[m[32m        "globals": "^13.19.0",[m
+         "ignore": "^5.2.0",[m
+         "import-fresh": "^3.2.1",[m
+         "js-yaml": "^4.1.0",[m
+[36m@@ -238,44 +209,20 @@[m
+         "strip-json-comments": "^3.1.1"[m
+       },[m
+       "engines": {[m
+[31m-        "node": "^18.18.0 || ^20.9.0 || >=21.1.0"[m
+[32m+[m[32m        "node": "^12.22.0 || ^14.17.0 || >=16.0.0"[m
+       },[m
+       "funding": {[m
+         "url": "https://opencollective.com/eslint"[m
+       }[m
+     },[m
+     "nod

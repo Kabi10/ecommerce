@@ -1,6 +1,8 @@
 'use client'
 
 import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
+import { Suspense } from 'react'
 
 interface PaginationProps {
   totalPages: number
@@ -8,7 +10,9 @@ interface PaginationProps {
   searchParams: Record<string, string | string[]>
 }
 
-export default function Pagination({ totalPages, currentPage, searchParams }: PaginationProps) {
+function PaginationContent({ totalPages, currentPage, searchParams }: PaginationProps) {
+  const searchParamsObj = useSearchParams()
+  
   if (totalPages <= 1) return null
 
   return (
@@ -38,5 +42,13 @@ export default function Pagination({ totalPages, currentPage, searchParams }: Pa
         )
       })}
     </div>
+  )
+}
+
+export default function Pagination(props: PaginationProps) {
+  return (
+    <Suspense>
+      <PaginationContent {...props} />
+    </Suspense>
   )
 } 
