@@ -33,6 +33,11 @@
     - Use dynamic imports with `ssr: false` for components that depend on client state
     - Provide loading fallbacks that match the component's structure
     - Wrap client components in Suspense boundaries
+12. Keep layouts simple and avoid duplicate UI patterns:
+    - Layout components (`layout.tsx`) should focus on structural elements and shared UI
+    - Page-specific UI elements should live in the page component (`page.tsx`)
+    - Avoid implementing the same functionality in both layout and page components
+    - When in doubt, prefer implementing UI elements in the page component for better maintainability
 
 ## Scratchpad
 
@@ -60,7 +65,7 @@
     [X] Set up PostgreSQL database
     [X] Configure Prisma and create initial schema
     [X] Implement NextAuth.js beta for authentication
-    [ ] Set up email service with Resend
+    [X] Set up email service with Resend
 
 ### Phase 2: Core Features Development
 [X] 2.1. Products Catalog
@@ -94,16 +99,36 @@
     [X] Cart total calculations
 
 [ ] 2.3. User Authentication
-    [ ] Sign up/login flows
-    [ ] User roles (admin, customer)
-    [ ] Password reset functionality
-    [ ] OAuth providers integration
+    [X] Sign up/login flows
+    [X] User roles (admin, customer)
+    [X] Password reset functionality
+        [X] Create forgot password page
+        [X] Implement forgot password API with JWT
+        [X] Create reset password page
+        [X] Implement reset password API with JWT verification
+        [X] Add development mode token logging
+    [X] OAuth providers integration
+        [X] Configure GitHub OAuth
+        [X] Configure Google OAuth
+        [X] Update sign-in page with provider buttons
+        [X] Handle OAuth callbacks and user creation
+    [X] Authentication Improvements
+        [X] Switch from Prisma adapter to JWT strategy
+        [X] Remove database session storage
+        [X] Implement stateless password reset
+        [X] Update schema to remove reset token fields
 
 [ ] 2.4. Checkout Process
     [ ] Shipping information form
     [ ] Payment integration (Stripe)
     [ ] Order confirmation
     [ ] Email notifications
+
+[ ] 2.5. Image Handling
+    [ ] Replace Unsplash random images with stable URLs
+    [ ] Implement proper image fallbacks
+    [ ] Add image optimization
+    [ ] Set up proper error handling for failed image loads
 
 ### Phase 3: Admin Dashboard Development
 [ ] 3.1. Admin Panel Setup
@@ -153,11 +178,11 @@
     [ ] Create product recommendations
 
 ### Phase 5: Advanced Features
-[ ] 5.1. Search and Filter
-    [ ] Implement advanced search
-    [ ] Add faceted filtering
-    [ ] Create price range filter
-    [ ] Implement sorting options
+[X] 5.1. Search and Filter
+    [X] Implement advanced search
+    [X] Add faceted filtering
+    [X] Create price range filter
+    [X] Implement sorting options
 
 [ ] 5.2. Performance Optimization
     [ ] Implement image optimization
