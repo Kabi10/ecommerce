@@ -1,119 +1,134 @@
-'use server'
+import { Metadata } from 'next'
+import { prisma } from '@/lib/prisma'
+import { ProductGrid } from '@/components/products/product-grid'
+import { ProductFilters } from '@/components/products/product-filters'
+import { ProductSearch } from '@/components/products/product-search'
+import { Decimal } from '@prisma/client/runtime/library'
 
-import { PrismaClient } from '@prisma/client'
-import { getProductImage } from '@/lib/image-utils'
-import ProductGrid from './product-grid'
-import { Suspense } from 'react'
-import { Skeleton } from '@/components/ui/skeleton'
-
-const prisma = new PrismaClient()
-
-type Props = {
-  searchParams: Promise<{
-    search?: string
-    category?: string[]
-    minPrice?: string
-    maxPrice?: string
-    page?: string
-  }>
+export const metadata: Metadata = {
+  title: 'Products | EStore',
+  description: 'Browse all products in our store',
 }
 
-async function getProducts(searchParams: Awaited<Props['searchParams']>) {
-  const page = Number(searchParams.page) || 1
-  const pageSize = 12
+type SearchParams = {
+  category?: string
+  minPrice?: string
+  maxPrice?: string
+  sort?: string
+  page?: string
+  search?: string
+}
 
-  // Build the where clause based on search params
+type PageProps = {
+  params: Promise<Record<string, never>>
+  searchParams: Promise<SearchParams>
+}
+
+async function getProducts(searchParams: SearchParams) {
+  const page = Number(searchParams.page) || 1
+  const limit = 12
+  const skip = (page - 1) * limit
+
   const where = {
-    AND: [
-      // Search query
-      searchParams.search
-        ? {
-            OR: [
-              { name: { contains: searchParams.search, mode: 'insensitive' as const } },
-              { description: { contains: searchParams.search, mode: 'insensitive' as const } },
-            ],
-          }
-        : {},
-      // Category filter
-      searchParams.category?.length
-        ? { categoryId: { in: searchParams.category } }
-        : {},
-      // Price range
-      searchParams.minPrice || searchParams.maxPrice
-        ? {
-            price: {
-              ...(searchParams.minPrice && { gte: parseFloat(searchParams.minPrice) }),
-              ...(searchParams.maxPrice && { lte: parseFloat(searchParams.maxPrice) }),
-            },
-          }
-        : {},
-    ].filter(condition => Object.keys(condition).length > 0),
+    ...(searchParams.category && {
+      categoryId: searchParams.category,
+    }),
+    ...(searchParams.minPrice &&
+      searchParams.maxPrice && {
+        price: {
+          gte: Number(searchParams.minPrice),
+          lte: Number(searchParams.maxPrice),
+        },
+      }),
+    ...(searchParams.search && {
+      OR: [
+        { name: { contains: searchParams.search, mode: 'insensitive' } },
+        { description: { contains: searchParams.search, mode: 'insensitive' } },
+      ],
+    }),
   }
 
-  // Get products with pagination
-  const products = await prisma.product.findMany({
-    where,
-    include: {
-      category: true,
-      reviews: {
-        include: {
-          user: true,
-        },
+  const [products, total] = await Promise.all([
+    prisma.product.findMany({
+      where,
+      include: {
+        category: true,
+        reviews: true,
       },
-    },
-    skip: (page - 1) * pageSize,
-    take: pageSize,
-  })
+      skip,
+      take: limit,
+      orderBy: {
+        ...(searchParams.sort === 'price_asc' && { price: 'asc' }),
+        ...(searchParams.sort === 'price_desc' && { price: 'desc' }),
+        ...(searchParams.sort === 'name_asc' && { name: 'asc' }),
+        ...(searchParams.sort === 'name_desc' && { name: 'desc' }),
+        ...(!searchParams.sort && { createdAt: 'desc' }),
+      },
+    }),
+    prisma.product.count({ where }),
+  ])
 
-  // Get total count for pagination
-  const total = await prisma.product.count({ where })
+  const productsWithNumberPrice = products.map(product => ({
+    ...product,
+    price: Number(product.price)
+  }))
+
+  const totalPages = Math.ceil(total / limit)
 
   return {
-    products: products.map(product => ({
-      ...product,
-      price: Number(product.price),
-      image: getProductImage(product.name),
-      averageRating: product.reviews.length > 0
-        ? product.reviews.reduce((acc, review) => acc + review.rating, 0) / product.reviews.length
-        : 0,
-    })),
-    totalPages: Math.ceil(total / pageSize),
-    currentPage: page,
+    products: productsWithNumberPrice,
+    pagination: {
+      page,
+      limit,
+      total,
+      totalPages,
+    },
   }
 }
 
-function ProductGridSkeleton() {
-  return (
-    <div className="space-y-8">
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {[...Array(6)].map((_, i) => (
-          <div key={i} className="space-y-4">
-            <Skeleton className="aspect-square w-full" />
-            <div className="space-y-2">
-              <Skeleton className="h-4 w-1/3" />
-              <Skeleton className="h-4 w-2/3" />
-              <Skeleton className="h-4 w-1/2" />
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
+async function getMinMaxPrices() {
+  const [minPrice, maxPrice] = await Promise.all([
+    prisma.product.findFirst({
+      orderBy: { price: 'asc' },
+      select: { price: true },
+    }),
+    prisma.product.findFirst({
+      orderBy: { price: 'desc' },
+      select: { price: true },
+    }),
+  ])
+
+  return {
+    minPrice: Number(minPrice?.price || 0),
+    maxPrice: Number(maxPrice?.price || 1000),
+  }
 }
 
-export default async function ProductsPage({ searchParams }: Props) {
-  const resolvedParams = await searchParams;
-  const { products, totalPages, currentPage } = await getProducts(resolvedParams);
+export default async function ProductsPage({ params, searchParams }: PageProps) {
+  const resolvedParams = await params
+  const resolvedSearchParams = await searchParams
+  const { products, pagination } = await getProducts(resolvedSearchParams)
+  const { minPrice, maxPrice } = await getMinMaxPrices()
+
   return (
-    <div>
-      <Suspense fallback={<ProductGridSkeleton />}>
-        <ProductGrid 
-          products={products} 
-          totalPages={totalPages} 
-          currentPage={currentPage} 
-          searchParams={resolvedParams}
-        />
-      </Suspense>
+    <div className="container py-8 md:py-10">
+      <div className="flex flex-col md:flex-row gap-8">
+        <aside className="w-full md:w-64 flex-none">
+          <div className="sticky top-4 space-y-6">
+            <ProductSearch className="mb-6" />
+            <ProductFilters
+              minPrice={minPrice}
+              maxPrice={maxPrice}
+            />
+          </div>
+        </aside>
+        <main className="flex-1">
+          <ProductGrid
+            products={products}
+            pagination={pagination}
+          />
+        </main>
+      </div>
     </div>
   )
 } 

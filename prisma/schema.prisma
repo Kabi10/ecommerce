@@ -15,15 +15,15 @@ datasource db {
 
 // User and Authentication Models
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String    @unique
-  emailVerified DateTime?
-  image         String?
-  password      String?
-  role          Role      @default(USER)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id              String    @id @default(cuid())
+  name            String?
+  email           String    @unique
+  emailVerified   DateTime?
+  image           String?
+  password        String?
+  role            Role      @default(USER)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 
   // Relations
   accounts      Account[]
@@ -169,6 +169,7 @@ model Review {
 enum Role {
   USER
   ADMIN
+  CUSTOMER
 }
 
 enum OrderStatus {

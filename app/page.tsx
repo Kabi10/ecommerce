@@ -1,97 +1,68 @@
+'use client'
+
 import Link from 'next/link'
-import Image from 'next/image'
-import { PrismaClient } from '@prisma/client'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { ArrowRight, ShoppingCart, Tag, Truck } from 'lucide-react'
 import { getHeroImage, getCategoryImage, getProductImage } from '@/lib/image-utils'
+import { Image } from '@/components/ui/image'
 
-const prisma = new PrismaClient()
+// Mock data for categories
+const categories = [
+  { id: '1', name: 'Books & Literature', description: 'Fiction, non-fiction, and more' },
+  { id: '2', name: 'Textbooks & Educational', description: 'Academic and learning materials' },
+  { id: '3', name: 'Industrial & Electrical Equipment', description: 'Professional grade equipment' },
+  { id: '4', name: 'Coins & Collectibles', description: 'Rare and valuable items' },
+]
 
-async function getHomePageData() {
-  const categories = await prisma.category.findMany({
-    take: 4,
-  })
+// Mock data for featured products
+const featuredProducts = [
+  {
+    id: '1',
+    name: 'Advanced Mathematics Textbook',
+    price: 79.99,
+    description: 'Comprehensive guide for advanced mathematics',
+  },
+  {
+    id: '2',
+    name: 'The Art of Programming',
+    price: 49.99,
+    description: 'Learn programming from experts',
+  },
+  {
+    id: '3',
+    name: 'Emerson Control System',
+    price: 599.99,
+    description: 'Industrial-grade control system',
+  },
+]
 
-  const featuredProducts = await prisma.product.findMany({
-    take: 4,
-    include: {
-      category: true,
-      reviews: {
-        select: {
-          rating: true,
-        },
-      },
-    },
-  })
+// Transform data to include images
+const categoriesWithImages = categories.map(category => ({
+  ...category,
+  image: getCategoryImage(category.name)
+}))
 
-  return {
-    categories: categories.map(category => ({
-      ...category,
-      image: getCategoryImage(category.name)
-    })),
-    featuredProducts: featuredProducts.map(product => ({
-      ...product,
-      images: [getProductImage(product.name)],
-      averageRating: product.reviews.length > 0
-        ? product.reviews.reduce((acc, review) => acc + review.rating, 0) / product.reviews.length
-        : 0,
-    })),
-  }
-}
+const productsWithImages = featuredProducts.map(product => ({
+  ...product,
+  images: [getProductImage(product.name)],
+}))
 
-export default async function Home() {
-  const { categories, featuredProducts } = await getHomePageData()
+export default function Home() {
   const heroImage = getHeroImage()
 
   return (
-    <main>
+    <main className="flex-1">
       {/* Hero Section */}
-      <section className="relative h-[600px] flex items-center justify-center bg-gray-900 text-white">
-        <div className="absolute inset-0 overflow-hidden">
-          <Image
-            src={heroImage}
-            alt="Hero background"
-            fill
-            className="object-cover opacity-50"
-            priority
-          />
-        </div>
-        <div className="relative z-10 text-center space-y-6 max-w-4xl mx-auto px-4">
-          <h1 className="text-5xl font-bold">Your One-Stop Shop for Everything</h1>
-          <p className="text-xl">Discover amazing products at unbeatable prices</p>
-          <Button size="lg" asChild>
-            <Link href="/products">
-              Shop Now <ArrowRight className="ml-2" />
-            </Link>
-          </Button>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section className="py-16 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="flex items-center space-x-4">
-              <Truck className="h-8 w-8 text-primary" />
-              <div>
-                <h3 className="font-semibold">Free Shipping</h3>
-                <p className="text-sm text-gray-600">On orders over $100</p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-4">
-              <ShoppingCart className="h-8 w-8 text-primary" />
-              <div>
-                <h3 className="font-semibold">Secure Shopping</h3>
-                <p className="text-sm text-gray-600">100% secure payment</p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-4">
-              <Tag className="h-8 w-8 text-primary" />
-              <div>
-                <h3 className="font-semibold">Best Prices</h3>
-                <p className="text-sm text-gray-600">Price match guarantee</p>
-              </div>
+      <section className="relative h-[600px] w-full">
+        <Image {...heroImage} className="h-full w-full object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/50 to-black/25">
+          <div className="container mx-auto flex h-full items-center px-4">
+            <div className="max-w-xl text-white">
+              <h1 className="mb-4 text-4xl font-bold">Welcome to Our Store</h1>
+              <p className="mb-6 text-lg">Discover amazing products at great prices</p>
+              <Button asChild>
+                <Link href="/products">Shop Now</Link>
+              </Button>
             </div>
           </div>
         </div>
@@ -99,66 +70,46 @@ export default async function Home() {
 
       {/* Categories Section */}
       <section className="py-16">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex justify-between items-center mb-8">
-            <h2 className="text-3xl font-bold">Shop by Category</h2>
-            <Button variant="outline" asChild>
-              <Link href="/categories">View All Categories</Link>
-            </Button>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {categories.map((category) => (
-              <Link key={category.id} href={`/categories/${category.id}`}>
-                <Card className="hover:shadow-lg transition-shadow">
-                  <CardHeader>
-                    <div className="relative h-48 w-full">
-                      <Image
-                        src={category.image}
-                        alt={category.name}
-                        fill
-                        className="object-cover rounded-t-lg"
-                      />
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <CardTitle>{category.name}</CardTitle>
-                  </CardContent>
-                </Card>
-              </Link>
+        <div className="container mx-auto px-4">
+          <h2 className="mb-8 text-3xl font-bold">Shop by Category</h2>
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {categoriesWithImages.map((category) => (
+              <Card key={category.id} className="overflow-hidden">
+                <CardHeader className="p-0">
+                  <Image {...category.image} className="h-48 w-full object-cover" />
+                </CardHeader>
+                <CardContent className="p-4">
+                  <CardTitle className="text-xl">{category.name}</CardTitle>
+                  <p className="mt-2 text-sm text-muted-foreground">{category.description}</p>
+                </CardContent>
+                <CardFooter className="p-4 pt-0">
+                  <Button asChild variant="secondary" className="w-full">
+                    <Link href={`/products?category=${category.name}`}>View Products</Link>
+                  </Button>
+                </CardFooter>
+              </Card>
             ))}
           </div>
         </div>
       </section>
 
       {/* Featured Products Section */}
-      <section className="py-16 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex justify-between items-center mb-8">
-            <h2 className="text-3xl font-bold">Featured Products</h2>
-            <Button variant="outline" asChild>
-              <Link href="/products">View All Products</Link>
-            </Button>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {featuredProducts.map((product) => (
-              <Card key={product.id} className="hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <div className="relative h-48 w-full">
-                    <Image
-                      src={product.images[0]}
-                      alt={product.name}
-                      fill
-                      className="object-cover rounded-t-lg"
-                    />
-                  </div>
+      <section className="bg-muted py-16">
+        <div className="container mx-auto px-4">
+          <h2 className="mb-8 text-3xl font-bold">Featured Products</h2>
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {productsWithImages.map((product) => (
+              <Card key={product.id} className="overflow-hidden">
+                <CardHeader className="p-0">
+                  <Image {...product.images[0]} className="h-48 w-full object-cover" />
                 </CardHeader>
-                <CardContent>
-                  <div className="text-sm text-gray-500 mb-2">{product.category.name}</div>
-                  <CardTitle className="line-clamp-1">{product.name}</CardTitle>
-                  <div className="mt-2 text-lg font-bold">${product.price.toString()}</div>
+                <CardContent className="p-4">
+                  <CardTitle className="text-xl">{product.name}</CardTitle>
+                  <p className="mt-2 text-sm text-muted-foreground">{product.description}</p>
+                  <p className="mt-2 text-lg font-bold">${product.price.toFixed(2)}</p>
                 </CardContent>
-                <CardFooter>
-                  <Button className="w-full" asChild>
+                <CardFooter className="p-4 pt-0">
+                  <Button asChild className="w-full">
                     <Link href={`/products/${product.id}`}>View Details</Link>
                   </Button>
                 </CardFooter>

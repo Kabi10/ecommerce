@@ -3,10 +3,10 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { User, Search, Menu, ShoppingCart } from 'lucide-react'
+import { User, Menu, ShoppingCart } from 'lucide-react'
 import { useState, Suspense } from 'react'
 import dynamic from 'next/dynamic'
+import { ProductSearch } from '@/components/products/product-search'
 
 const CartSheet = dynamic(() => import('@/components/cart/cart-sheet').then(mod => mod.CartSheet), {
   ssr: false,
@@ -57,17 +57,12 @@ export function Navbar() {
             </div>
           </div>
 
-          {/* Search Bar */}
-          <div className="hidden md:flex items-center flex-1 max-w-md mx-4">
-            <div className="w-full relative">
-              <Input
-                type="search"
-                placeholder="Search products..."
-                className="w-full pl-10"
-              />
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+          {/* Search Bar - Only visible on large screens when not on products page */}
+          {pathname !== '/products' && (
+            <div className="hidden lg:flex items-center flex-1 max-w-md mx-4">
+              <ProductSearch className="w-full" />
             </div>
-          </div>
+          )}
 
           {/* Right side buttons */}
           <div className="flex items-center">
@@ -111,13 +106,11 @@ export function Navbar() {
               </Link>
             ))}
           </div>
-          <div className="p-3">
-            <Input
-              type="search"
-              placeholder="Search products..."
-              className="w-full"
-            />
-          </div>
+          {pathname !== '/products' && (
+            <div className="p-3">
+              <ProductSearch />
+            </div>
+          )}
         </div>
       )}
     </nav>

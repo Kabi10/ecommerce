@@ -119,16 +119,16 @@
         [X] Update schema to remove reset token fields
 
 [ ] 2.4. Checkout Process
-    [ ] Shipping information form
-    [ ] Payment integration (Stripe)
-    [ ] Order confirmation
-    [ ] Email notifications
+    [X] Shipping information form
+    [X] Payment integration (Stripe)
+    [X] Order confirmation
+    [X] Email notifications
 
 [ ] 2.5. Image Handling
-    [ ] Replace Unsplash random images with stable URLs
-    [ ] Implement proper image fallbacks
-    [ ] Add image optimization
-    [ ] Set up proper error handling for failed image loads
+    [X] Replace Unsplash random images with stable URLs
+    [X] Implement proper image fallbacks
+    [X] Add image optimization
+    [X] Set up proper error handling for failed image loads
 
 ### Phase 3: Admin Dashboard Development
 [ ] 3.1. Admin Panel Setup

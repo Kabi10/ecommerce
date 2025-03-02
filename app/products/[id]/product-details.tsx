@@ -71,7 +71,11 @@ export default function ProductDetails({ product, relatedProducts }: ProductDeta
 
           <p className="text-muted-foreground">{product.description}</p>
 
-          <Button size="lg" className="w-full" onClick={handleAddToCart}>
+          <Button 
+            size="lg" 
+            className="w-full bg-yellow-500 hover:bg-yellow-600 text-white" 
+            onClick={handleAddToCart}
+          >
             <ShoppingCart className="mr-2 h-5 w-5" />
             Add to Cart
           </Button>
