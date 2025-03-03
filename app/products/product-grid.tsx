@@ -8,7 +8,7 @@ import { useCart } from '@/lib/store/cart'
 import { formatPrice } from '@/lib/utils'
 import { Product } from '@/app/types'
 import { Suspense } from 'react'
-import Pagination from './pagination'
+import { Pagination } from './pagination'
 
 interface ProductGridProps {
   products: Product[]
@@ -99,7 +99,7 @@ export default function ProductGrid({ products, totalPages, currentPage, searchP
 
       {/* Pagination */}
       <Suspense>
-        <Pagination totalPages={totalPages} currentPage={currentPage} searchParams={searchParams} />
+        <Pagination totalPages={totalPages} />
       </Suspense>
     </div>
   )

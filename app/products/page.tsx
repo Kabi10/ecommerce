@@ -4,6 +4,7 @@ import { ProductGrid } from '@/components/products/product-grid'
 import { ProductFilters } from '@/components/products/product-filters'
 import { ProductSearch } from '@/components/products/product-search'
 import { Decimal } from '@prisma/client/runtime/library'
+import { Prisma } from '@prisma/client'
 
 export const metadata: Metadata = {
   title: 'Products | EStore',
@@ -29,21 +30,21 @@ async function getProducts(searchParams: SearchParams) {
   const limit = 12
   const skip = (page - 1) * limit
 
-  const where = {
+  const where: Prisma.ProductWhereInput = {
     ...(searchParams.category && {
       categoryId: searchParams.category,
     }),
     ...(searchParams.minPrice &&
       searchParams.maxPrice && {
         price: {
-          gte: Number(searchParams.minPrice),
-          lte: Number(searchParams.maxPrice),
+          gte: new Decimal(searchParams.minPrice),
+          lte: new Decimal(searchParams.maxPrice),
         },
       }),
     ...(searchParams.search && {
       OR: [
-        { name: { contains: searchParams.search, mode: 'insensitive' } },
-        { description: { contains: searchParams.search, mode: 'insensitive' } },
+        { name: { contains: searchParams.search, mode: Prisma.QueryMode.insensitive } },
+        { description: { contains: searchParams.search, mode: Prisma.QueryMode.insensitive } },
       ],
     }),
   }
@@ -104,11 +105,16 @@ async function getMinMaxPrices() {
   }
 }
 
+async function getCategories() {
+  return await prisma.category.findMany()
+}
+
 export default async function ProductsPage({ params, searchParams }: PageProps) {
   const resolvedParams = await params
   const resolvedSearchParams = await searchParams
   const { products, pagination } = await getProducts(resolvedSearchParams)
   const { minPrice, maxPrice } = await getMinMaxPrices()
+  const categories = await getCategories()
 
   return (
     <div className="container py-8 md:py-10">
@@ -119,6 +125,7 @@ export default async function ProductsPage({ params, searchParams }: PageProps) 
             <ProductFilters
               minPrice={minPrice}
               maxPrice={maxPrice}
+              categories={categories}
             />
           </div>
         </aside>

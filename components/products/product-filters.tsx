@@ -15,9 +15,13 @@ import { Separator } from '@/components/ui/separator'
 interface ProductFiltersProps {
   minPrice: number
   maxPrice: number
+  categories: {
+    id: string
+    name: string
+  }[]
 }
 
-export function ProductFilters({ minPrice, maxPrice }: ProductFiltersProps) {
+export function ProductFilters({ minPrice, maxPrice, categories }: ProductFiltersProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
 
@@ -52,7 +56,7 @@ export function ProductFilters({ minPrice, maxPrice }: ProductFiltersProps) {
 
       <div>
         <h3 className="text-sm font-medium mb-2">Categories</h3>
-        <CategoryFilter />
+        <CategoryFilter categories={categories} />
       </div>
       
       <Separator className="my-4" />
@@ -62,8 +66,6 @@ export function ProductFilters({ minPrice, maxPrice }: ProductFiltersProps) {
         <PriceRangeFilter
           minPrice={minPrice}
           maxPrice={maxPrice}
-          defaultMin={Number(searchParams.get('minPrice')) || minPrice}
-          defaultMax={Number(searchParams.get('maxPrice')) || maxPrice}
         />
       </div>
     </div>
