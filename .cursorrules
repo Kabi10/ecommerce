@@ -38,6 +38,21 @@
     - Page-specific UI elements should live in the page component (`page.tsx`)
     - Avoid implementing the same functionality in both layout and page components
     - When in doubt, prefer implementing UI elements in the page component for better maintainability
+13. When working with client components that use search parameters:
+    - Create a separate content component for the actual functionality
+    - Create a loading fallback that matches the structure of the content
+    - Use Suspense to wrap the content component
+    - Keep state management within the content component
+14. For form components with loading states:
+    - Handle loading states within the component using local state
+    - Show appropriate loading indicators during async operations
+    - Disable form inputs and buttons during submission
+    - Provide clear feedback about the operation status
+15. When implementing filters and search:
+    - Use URL search parameters to maintain state
+    - Implement debouncing for search inputs
+    - Create separate components for different filter types
+    - Use appropriate loading states for each filter component
 
 ## Scratchpad
 
