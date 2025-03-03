@@ -5,13 +5,14 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { Input } from '@/components/ui/input'
 import { Search } from 'lucide-react'
 import { useDebounce } from '@/lib/hooks/use-debounce'
+import { Suspense } from 'react'
 
 interface ProductSearchProps {
   className?: string
   placeholder?: string
 }
 
-export function ProductSearch({ className, placeholder = 'Search products...' }: ProductSearchProps) {
+function SearchInput({ className, placeholder = 'Search products...' }: ProductSearchProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
   
@@ -45,5 +46,26 @@ export function ProductSearch({ className, placeholder = 'Search products...' }:
         />
       </div>
     </div>
+  )
+}
+
+export function ProductSearch(props: ProductSearchProps) {
+  return (
+    <Suspense fallback={
+      <div>
+        <h3 className="text-sm font-medium mb-2">Search</h3>
+        <div className={`relative ${props.className}`}>
+          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Input
+            type="search"
+            placeholder={props.placeholder}
+            className="pl-8 w-full"
+            disabled
+          />
+        </div>
+      </div>
+    }>
+      <SearchInput {...props} />
+    </Suspense>
   )
 } 

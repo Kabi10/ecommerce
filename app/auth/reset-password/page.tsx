@@ -10,6 +10,19 @@ import { ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
 import { Suspense } from 'react'
 
+function LoadingCard() {
+  return (
+    <Card className="w-full max-w-md">
+      <CardHeader>
+        <CardTitle className="text-center text-3xl font-bold">Loading...</CardTitle>
+        <CardDescription className="text-center">
+          Please wait while we load your reset password form
+        </CardDescription>
+      </CardHeader>
+    </Card>
+  )
+}
+
 function ResetPasswordForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -169,8 +182,8 @@ function ResetPasswordForm() {
 
 export default function ResetPassword() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <Suspense>
+    <div className="container flex items-center justify-center min-h-[600px]">
+      <Suspense fallback={<LoadingCard />}>
         <ResetPasswordForm />
       </Suspense>
     </div>
