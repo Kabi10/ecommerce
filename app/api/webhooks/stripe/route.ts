@@ -1,21 +1,22 @@
-import { headers } from 'next/headers'
-import { NextResponse } from 'next/server'
-import { stripe } from '@/lib/stripe'
-import { prisma } from '@/lib/prisma'
-import { sendOrderConfirmationEmail } from '@/lib/email'
-import Stripe from 'stripe'
+import { headers } from "next/headers"
+import { NextResponse } from "next/server"
+import Stripe from "stripe"
+import { prisma } from "@/lib/prisma"
+import { sendOrderConfirmationEmail } from "@/lib/email"
 
-if (!process.env.STRIPE_WEBHOOK_SECRET) {
-  throw new Error('STRIPE_WEBHOOK_SECRET is not set')
-}
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+  apiVersion: "2025-02-24.acacia",
+  typescript: true,
+})
 
 export async function POST(req: Request) {
   const body = await req.text()
-  const signature = headers().get('stripe-signature')
+  const headersList = await headers()
+  const signature = headersList.get("stripe-signature")
 
   if (!signature) {
     return NextResponse.json(
-      { error: 'Missing stripe-signature header' },
+      { error: "Missing stripe-signature header" },
       { status: 400 }
     )
   }
@@ -24,21 +25,36 @@ export async function POST(req: Request) {
     const event = stripe.webhooks.constructEvent(
       body,
       signature,
-      process.env.STRIPE_WEBHOOK_SECRET
+      process.env.STRIPE_WEBHOOK_SECRET!
     )
 
-    if (event.type === 'payment_intent.succeeded') {
-      const paymentIntent = event.data.object as Stripe.PaymentIntent
+    if (event.type === "checkout.session.completed") {
+      const session = event.data.object as Stripe.Checkout.Session
 
-      // Get the order from metadata
-      const order = await prisma.order.findFirst({
+      const payment = await prisma.payment.findUnique({
         where: {
-          payment: {
-            paymentId: paymentIntent.id,
-          },
+          stripeSessionId: session.id,
         },
         include: {
-          payment: true,
+          order: true,
+        },
+      })
+
+      if (!payment) {
+        return NextResponse.json(
+          { error: "Payment not found" },
+          { status: 404 }
+        )
+      }
+
+      const order = await prisma.order.update({
+        where: {
+          id: payment.orderId,
+        },
+        data: {
+          status: "PROCESSING",
+        },
+        include: {
           user: true,
           orderItems: {
             include: {
@@ -49,56 +65,31 @@ export async function POST(req: Request) {
         },
       })
 
-      if (!order) {
-        console.error('Order not found for payment intent:', paymentIntent.id)
-        return NextResponse.json(
-          { error: 'Order not found' },
-          { status: 404 }
-        )
-      }
-
-      // Update order and payment status
-      await prisma.$transaction([
-        prisma.order.update({
-          where: { id: order.id },
-          data: { status: 'PROCESSING' },
-        }),
-        prisma.payment.update({
-          where: { id: order.payment!.id },
-          data: { status: 'COMPLETED' },
-        }),
-      ])
-
-      // Send order confirmation email
-      try {
-        await sendOrderConfirmationEmail({
-          orderNumber: order.id,
-          customerName: order.user.name || order.user.email,
-          total: Number(order.total),
-          items: order.orderItems.map((item) => ({
-            name: item.product.name,
-            quantity: item.quantity,
-            price: Number(item.price),
-          })),
-          shippingAddress: {
-            street: order.shippingAddress.street,
-            city: order.shippingAddress.city,
-            state: order.shippingAddress.state,
-            postalCode: order.shippingAddress.postalCode,
-            country: order.shippingAddress.country,
-          },
-        })
-      } catch (error) {
-        console.error('Error sending order confirmation email:', error)
-        // Don't throw error here, as we don't want to affect the order process
+      if (order && order.user?.email) {
+        try {
+          await sendOrderConfirmationEmail({
+            orderNumber: order.id,
+            customerName: order.user.email,
+            total: Number(order.total),
+            items: order.orderItems.map((item) => ({
+              name: item.product.name,
+              quantity: item.quantity,
+              price: Number(item.price),
+            })),
+            shippingAddress: order.shippingAddress,
+          })
+        } catch (error) {
+          console.error("Failed to send order confirmation email:", error)
+          // Continue processing even if email fails
+        }
       }
     }
 
     return NextResponse.json({ received: true })
   } catch (error) {
-    console.error('Error processing webhook:', error)
+    console.error("Webhook error:", error)
     return NextResponse.json(
-      { error: 'Webhook error' },
+      { error: "Webhook signature verification failed" },
       { status: 400 }
     )
   }

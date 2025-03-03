@@ -10,73 +10,72 @@ export const metadata = {
   description: 'Thank you for your purchase',
 }
 
-async function getLatestOrder(userId: string) {
-  return prisma.order.findFirst({
-    where: {
-      userId,
-      status: {
-        in: ['PENDING', 'PROCESSING'],
-      },
-    },
-    orderBy: {
-      createdAt: 'desc',
-    },
-    include: {
-      orderItems: {
-        include: {
-          product: true,
-        },
-      },
-      shippingAddress: true,
-    },
-  })
+interface PageProps {
+  searchParams: Promise<{ session_id?: string }>
 }
 
-export default async function SuccessPage({
+export default async function CheckoutSuccessPage({
   searchParams,
-}: {
-  searchParams: { payment_intent: string }
-}) {
+}: PageProps) {
   const session = await auth()
-  if (!session?.user?.id) {
-    redirect('/auth/signin')
+  const params = await searchParams
+
+  if (!session) {
+    redirect("/sign-in")
   }
 
-  const order = await getLatestOrder(session.user.id)
-  if (!order) {
-    redirect('/')
+  const session_id = params.session_id
+
+  if (!session_id) {
+    redirect("/")
   }
+
+  const payment = await prisma.payment.findUnique({
+    where: {
+      stripeSessionId: session_id,
+    },
+    include: {
+      order: {
+        include: {
+          orderItems: {
+            include: {
+              product: true,
+            },
+          },
+          shippingAddress: true,
+        },
+      },
+    },
+  })
+
+  if (!payment || payment.order.userId !== session.user.id) {
+    redirect("/")
+  }
+
+  const order = payment.order
 
   return (
-    <div className="container max-w-2xl py-8 md:py-10">
-      <div className="space-y-8">
-        <div className="flex flex-col items-center justify-center space-y-3 text-center">
-          <div className="rounded-full bg-green-100 p-3">
-            <CheckCircle className="h-8 w-8 text-green-600" />
-          </div>
-          <h1 className="text-3xl font-bold">Thank You!</h1>
-          <p className="text-muted-foreground">
+    <div className="container max-w-4xl py-20">
+      <div className="rounded-lg border p-8">
+        <div className="text-center">
+          <h1 className="text-4xl font-bold tracking-tight text-green-600">
+            Thank you for your order!
+          </h1>
+          <p className="mt-4 text-lg text-muted-foreground">
             Your order has been confirmed and will be shipped soon.
+          </p>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Order ID: {order.id}
           </p>
         </div>
 
-        <div className="rounded-lg border p-6 space-y-4">
+        <div className="mt-12">
           <h2 className="text-lg font-semibold">Order Details</h2>
-          <div className="space-y-2">
-            <p>
-              <span className="font-medium">Order Number:</span> {order.id}
-            </p>
-            <p>
-              <span className="font-medium">Status:</span>{' '}
-              {order.status.charAt(0) + order.status.slice(1).toLowerCase()}
-            </p>
-          </div>
-
-          <div className="divide-y">
+          <div className="mt-4 divide-y">
             {order.orderItems.map((item) => (
-              <div key={item.id} className="py-4 flex justify-between">
-                <div>
-                  <p className="font-medium">{item.product.name}</p>
+              <div key={item.id} className="flex py-4">
+                <div className="flex-1">
+                  <h3 className="font-medium">{item.product.name}</h3>
                   <p className="text-sm text-muted-foreground">
                     Quantity: {item.quantity}
                   </p>
@@ -87,22 +86,24 @@ export default async function SuccessPage({
               </div>
             ))}
           </div>
-
-          <div className="border-t pt-4">
-            <p className="flex justify-between font-medium">
-              <span>Total</span>
-              <span>${Number(order.total).toFixed(2)}</span>
-            </p>
+          <div className="mt-6 flex justify-between border-t pt-6">
+            <span className="font-semibold">Total</span>
+            <span className="font-semibold">
+              ${Number(order.total).toFixed(2)}
+            </span>
           </div>
         </div>
 
-        <div className="flex justify-center space-x-4">
-          <Button asChild>
-            <Link href="/account/orders">View Orders</Link>
-          </Button>
-          <Button asChild variant="outline">
-            <Link href="/">Continue Shopping</Link>
-          </Button>
+        <div className="mt-12">
+          <h2 className="text-lg font-semibold">Shipping Address</h2>
+          <div className="mt-4 text-sm">
+            <p>{order.shippingAddress.street}</p>
+            <p>
+              {order.shippingAddress.city}, {order.shippingAddress.state}{" "}
+              {order.shippingAddress.postalCode}
+            </p>
+            <p>{order.shippingAddress.country}</p>
+          </div>
         </div>
       </div>
     </div>

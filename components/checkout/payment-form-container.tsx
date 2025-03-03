@@ -1,7 +1,8 @@
 'use client'
 
 import * as React from 'react'
-import { useCartStore } from '@/lib/store/cart'
+import { useRouter } from "next/navigation"
+import { useCart } from "@/lib/store/cart"
 import { PaymentForm } from './payment-form'
 import { useToast } from '@/components/ui/use-toast'
 
@@ -10,56 +11,35 @@ interface PaymentFormContainerProps {
 }
 
 export function PaymentFormContainer({ addressId }: PaymentFormContainerProps) {
-  const [clientSecret, setClientSecret] = React.useState<string>('')
-  const { items, total, clearCart } = useCartStore()
+  const router = useRouter()
+  const { items, getTotalPrice, clearCart } = useCart()
   const { toast } = useToast()
+  const [isLoading, setIsLoading] = React.useState(false)
+  const [clientSecret, setClientSecret] = React.useState<string>('')
 
   React.useEffect(() => {
-    async function createOrder() {
+    // Initialize payment intent and get client secret
+    async function initializePayment() {
       try {
-        // Create order first
-        const orderResponse = await fetch('/api/orders', {
-          method: 'POST',
+        const response = await fetch("/api/payment/intent", {
+          method: "POST",
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            items: items.map(item => ({
-              productId: item.id,
-              quantity: item.quantity,
-              price: item.price,
-            })),
+            items,
             addressId,
-            total,
           }),
         })
 
-        if (!orderResponse.ok) {
-          throw new Error('Failed to create order')
+        if (!response.ok) {
+          throw new Error("Failed to initialize payment")
         }
 
-        const { orderId } = await orderResponse.json()
-
-        // Then create payment intent
-        const paymentResponse = await fetch('/api/payment', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            amount: total,
-            orderId,
-          }),
-        })
-
-        if (!paymentResponse.ok) {
-          throw new Error('Failed to create payment intent')
-        }
-
-        const data = await paymentResponse.json()
+        const data = await response.json()
         setClientSecret(data.clientSecret)
       } catch (error) {
-        console.error('Error creating order:', error)
+        console.error("Payment initialization error:", error)
         toast({
           title: 'Error',
           description: 'Failed to initialize payment. Please try again.',
@@ -68,24 +48,19 @@ export function PaymentFormContainer({ addressId }: PaymentFormContainerProps) {
       }
     }
 
-    if (total > 0 && !clientSecret) {
-      createOrder()
+    if (items.length > 0) {
+      initializePayment()
     }
-  }, [total, items, addressId, toast])
+  }, [items, addressId, toast])
 
-  if (!clientSecret || total === 0) {
-    return (
-      <div className="text-center text-muted-foreground">
-        Your cart is empty. Add some items to proceed with payment.
-      </div>
-    )
+  if (!clientSecret) {
+    return <div>Loading payment form...</div>
   }
 
   return (
     <PaymentForm
       clientSecret={clientSecret}
-      amount={total}
-      onSuccess={clearCart}
+      amount={getTotalPrice()}
     />
   )
 } 
