@@ -10,7 +10,7 @@ interface ImageProps extends Omit<NextImageProps, 'onError'> {
 }
 
 const Image = React.forwardRef<HTMLImageElement, ImageProps>(
-  ({ className, alt, fallback, ...props }, ref) => {
+  ({ className, alt, fallback, priority, ...props }, ref) => {
     const [error, setError] = React.useState(false)
     const fallbackImage = getFallbackImage()
 
@@ -30,6 +30,8 @@ const Image = React.forwardRef<HTMLImageElement, ImageProps>(
             error ? 'opacity-0' : 'opacity-100'
           )}
           onError={handleError}
+          priority={priority}
+          quality={75}
           {...props}
         />
         {error && (
@@ -40,6 +42,7 @@ const Image = React.forwardRef<HTMLImageElement, ImageProps>(
             fill
             sizes="100vw"
             priority={false}
+            quality={75}
           />
         )}
       </div>

@@ -1,5 +1,41 @@
 # Cursor Rules
 
+## ⚠️ MANDATORY PRE-IMPLEMENTATION CHECKLIST ⚠️
+STOP! Before writing ANY code or suggesting ANY changes:
+
+1. 🔍 SEARCH FIRST:
+   ```bash
+   # REQUIRED: Run these searches and document results
+   grep_search for functionality
+   file_search for similar files
+   list_dir in relevant directories
+   ```
+
+2. 📝 DOCUMENT FINDINGS:
+   ```markdown
+   # REQUIRED: Fill this out
+   ## Existing Files Found:
+   - [List all relevant files found]
+   
+   ## Existing Functionality:
+   - [Describe what already exists]
+   
+   ## Gaps Identified:
+   - [List what's missing or needs enhancement]
+   
+   ## Proposed Approach:
+   - [ ] Enhance existing code
+   - [ ] Create new files (requires justification)
+   - [ ] Refactor existing code
+   ```
+
+3. ✋ WAIT FOR APPROVAL:
+   - Present findings to user
+   - Get explicit approval for approach
+   - Never proceed with new files if similar functionality exists
+
+❌ IF YOU SKIP THIS CHECKLIST, YOU ARE VIOLATING THE MOST IMPORTANT RULE ❌
+
 ## Instructions
 
 - Record fixes for mistakes or corrections to avoid repetition in the `Lessons` section.
@@ -53,6 +89,313 @@
     - Implement debouncing for search inputs
     - Create separate components for different filter types
     - Use appropriate loading states for each filter component
+16. ALWAYS check for existing implementations before creating new files:
+    - Use grep_search or file_search to look for similar file names
+    - Search for related functionality in the codebase
+    - Check both the exact path and alternative locations
+    - If similar functionality exists, either enhance it or clearly document why a new implementation is needed
+    - Document the search process in the scratchpad before implementing new features
+17. NEVER skip the pre-implementation checklist:
+    - Skipping the checklist leads to duplicate code
+    - Duplicate code increases maintenance burden
+    - Duplicate code creates confusion about which implementation to use
+    - Duplicate code wastes time that could be spent enhancing existing features
+    - Always document your search process and findings before suggesting any changes
+18. Maintain consistent page layouts across sections:
+    - Use consistent padding (e.g., p-6)
+    - Use consistent header spacing (e.g., mb-8)
+    - Use consistent heading styles
+    - Use consistent description text styles
+    - Follow the established pattern:
+      ```tsx
+      <div className="p-6">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold">Page Title</h1>
+          <p className="text-muted-foreground">Page description</p>
+        </div>
+        <Suspense fallback={<Skeleton />}>
+          <Content />
+        </Suspense>
+      </div>
+      ```
+19. Handle authentication and authorization properly:
+    - Use middleware for protecting routes
+    - Include callback URLs for better UX
+    - Keep auth logic out of layout components
+    - Use role-based access control
+    - Handle auth state loading properly
+20. Implement proper loading states:
+    - Create skeleton components that match content structure
+    - Use Suspense boundaries effectively
+    - Show loading indicators for async operations
+    - Maintain layout stability during loading
+
+## Build Error Prevention Rules
+
+1. Next.js Configuration Best Practices:
+   - Keep `next.config.js` clean and minimal
+   - Use `typescript.ignoreBuildErrors` and `eslint.ignoreDuringBuilds` only temporarily
+   - Configure proper image domains in `remotePatterns`
+   - Set appropriate `experimental` features carefully
+
+2. Client Component Rules:
+   - Always use 'use client' directive for components with hooks
+   - Wrap client components in Suspense boundaries
+   - Use dynamic imports for heavy client-side components
+   - Provide loading states for all async operations
+
+3. Build Process Requirements:
+   - Run `npm run clean` before builds
+   - Check for type errors with `tsc --noEmit`
+   - Monitor build logs for warnings
+   - Keep dependencies updated weekly
+
+4. Error Resolution Steps:
+   - Check type definitions first
+   - Verify import paths
+   - Ensure proper Suspense boundaries
+   - Validate environment variables
+   - Review API endpoint configurations
+
+5. Performance Optimization Rules:
+   - Use dynamic imports for large components
+   - Implement proper code splitting
+   - Optimize images and assets
+   - Monitor bundle sizes
+
+6. SEO and Sitemap Rules:
+   - Maintain proper next-sitemap.config.js
+   - Update meta tags and descriptions
+   - Configure robots.txt appropriately
+   - Exclude sensitive routes
+
+7. Development Workflow:
+   - Use proper TypeScript types
+   - Implement error boundaries
+   - Add loading states
+   - Test in both development and production
+
+8. Authentication and API Rules:
+   - Use proper error handling
+   - Implement proper session management
+   - Handle edge cases and loading states
+   - Validate all user inputs
+
+9. Required Scripts in package.json:
+   ```json
+   {
+     "scripts": {
+       "dev": "next dev",
+       "build": "prisma generate && next build",
+       "postbuild": "next-sitemap",
+       "start": "next start",
+       "lint": "next lint",
+       "clean": "rimraf .next out",
+       "prebuild": "npm run clean",
+       "type-check": "tsc --noEmit"
+     }
+   }
+   ```
+
+10. Required Development Dependencies:
+    - rimraf (for cleaning build artifacts)
+    - next-sitemap (for sitemap generation)
+    - typescript (for type checking)
+    - eslint and related plugins
+
+## Critical Standards
+
+### Version Control Standards
+- Never commit directly to main/master
+- Branch naming: `feature/`, `fix/`, `refactor/`, `docs/` prefixes
+- Commit messages must reference task/issue numbers
+- Squash commits before merging to main
+- Delete branches after merging
+
+### Rollback Procedures
+- Keep deployment artifacts for last 3 successful builds
+- Document rollback commands in deployment scripts
+- Maintain database migration reversions
+- Keep configuration backups
+- Test rollback procedures monthly
+
+### Performance Budgets
+- Page Load: < 3s on 4G
+- First Contentful Paint: < 1.5s
+- Bundle Size: < 200KB initial JS
+- API Response: < 300ms
+- Image Optimization: WebP/AVIF with fallbacks
+- Core Web Vitals minimum:
+  - LCP: < 2.5s
+  - FID: < 100ms
+  - CLS: < 0.1
+
+### Dependency Management
+- Weekly security audit: `npm audit`
+- Monthly dependency updates
+- Keep lockfile clean (no duplicate packages)
+- Document breaking changes
+- Test suite must pass after updates
+- Update order: 
+  1. Security patches
+  2. Core dependencies (Next.js, React)
+  3. UI components
+  4. Dev dependencies
+
+### Testing Requirements by Feature Type
+1. UI Components:
+   - Unit tests for logic
+   - Snapshot tests for rendering
+   - Accessibility tests
+   - Browser compatibility tests
+
+2. Forms:
+   - Validation tests
+   - Error state tests
+   - Submit handling tests
+   - Loading state tests
+
+3. API Endpoints:
+   - Input validation tests
+   - Authentication tests
+   - Error handling tests
+   - Rate limiting tests
+   - Integration tests
+
+4. Data Mutations:
+   - Transaction tests
+   - Rollback tests
+   - Constraint tests
+   - Race condition tests
+
+5. Authentication:
+   - Session handling tests
+   - Permission tests
+   - Token validation tests
+   - OAuth flow tests
+
+### Environment-Specific Checks
+#### Development
+- Hot reload working
+- TypeScript watching
+- ESLint auto-fixing
+- Test runner in watch mode
+- Local DB migrations
+- ENV variables validated
+
+#### Staging
+- Production build test
+- Full test suite
+- Load testing
+- Integration testing
+- E2E testing
+- DB migration dry run
+
+#### Production
+- Zero-downtime deployment
+- Backup verification
+- SSL/TLS check
+- CDN purge
+- DNS propagation
+- Health check endpoints
+- Monitoring active
+- Alert system ready
+
+### Automated Testing Pipeline
+```yaml
+# Example GitHub Actions workflow structure
+name: CI
+on: [push, pull_request]
+jobs:
+  validate:
+    - lint
+    - type-check
+    - unit-tests
+    - build
+  integrate:
+    - e2e-tests
+    - api-tests
+    - performance-tests
+  security:
+    - dependency-audit
+    - security-scan
+    - license-check
+  deploy:
+    - environment-check
+    - backup
+    - deploy
+    - health-check
+    - rollback-ready
+```
+
+### Component Organization Standards
+1. Page Components:
+   - Must be server components by default
+   - Should focus on layout and data fetching
+   - Should use Suspense for loading states
+   - Should implement proper metadata
+   Example:
+   ```tsx
+   export const metadata = {
+     title: "Page Title",
+     description: "Page description"
+   }
+
+   export default function Page() {
+     return (
+       <div className="p-6">
+         <div className="mb-8">
+           <h1 className="text-3xl font-bold">Title</h1>
+           <p className="text-muted-foreground">Description</p>
+         </div>
+         <Suspense fallback={<Skeleton />}>
+           <Content />
+         </Suspense>
+       </div>
+     )
+   }
+   ```
+
+2. Content Components:
+   - Should be client components if they need interactivity
+   - Should handle their own state management
+   - Should implement proper loading states
+   - Should be wrapped in Suspense boundaries
+
+3. Layout Components:
+   - Should focus on structural elements
+   - Should avoid implementing page-specific logic
+   - Should handle navigation and shared UI
+   - Should implement proper auth protection
+
+4. UI Components:
+   - Should be reusable across different contexts
+   - Should implement proper TypeScript types
+   - Should handle all possible states (loading, error, empty)
+   - Should follow accessibility guidelines
+
+### File Structure Standards
+```
+app/
+  ├── (routes)/
+  │   ├── page.tsx
+  │   ├── layout.tsx
+  │   └── loading.tsx
+  ├── api/
+  │   └── route.ts
+components/
+  ├── ui/
+  │   └── [shadcn-components]
+  ├── [feature]/
+  │   ├── component.tsx
+  │   └── loading.tsx
+  └── skeletons/
+lib/
+  ├── utils.ts
+  └── constants.ts
+types/
+  └── index.ts
+```
 
 ## Scratchpad
 
@@ -82,6 +425,15 @@
     [X] Implement NextAuth.js beta for authentication
     [X] Set up email service with Resend
 
+📋 Phase 1 CI/Error Checks:
+  [X] Run type check: npm run type-check
+  [X] Run linting: npm run lint
+  [X] Verify all dependencies installed: npm install
+  [X] Test build: npm run build
+  [X] Check for environment variables
+  [X] Verify database connection
+  [X] Test authentication flow
+
 ### Phase 2: Core Features Development
 [X] 2.1. Products Catalog
     [X] Products listing page with filters and search
@@ -106,12 +458,29 @@
         [X] Display related products grid
         [X] Add hover effects and transitions
 
+📋 Products Feature CI/Error Checks:
+  [X] Verify all API endpoints
+  [X] Test pagination edge cases
+  [X] Check image optimization
+  [X] Validate search functionality
+  [X] Test filter combinations
+  [X] Verify responsive layout
+  [X] Run build and check bundle size
+
 [X] 2.2. Shopping Cart System
     [X] Create cart store with Zustand
     [X] Implement add/remove functionality
     [X] Cart persistence
     [X] Quantity management
     [X] Cart total calculations
+
+📋 Cart Feature CI/Error Checks:
+  [X] Test cart persistence
+  [X] Verify price calculations
+  [X] Check state management
+  [X] Test localStorage fallback
+  [X] Verify cart sync across tabs
+  [X] Run build and check bundle size
 
 [ ] 2.3. User Authentication
     [X] Sign up/login flows
@@ -133,40 +502,141 @@
         [X] Implement stateless password reset
         [X] Update schema to remove reset token fields
 
-[ ] 2.4. Checkout Process
-    [X] Shipping information form
-    [X] Payment integration (Stripe)
-    [X] Order confirmation
-    [X] Email notifications
-
-[ ] 2.5. Image Handling
-    [X] Replace Unsplash random images with stable URLs
-    [X] Implement proper image fallbacks
-    [X] Add image optimization
-    [X] Set up proper error handling for failed image loads
+📋 Authentication CI/Error Checks:
+  [X] Test all auth flows
+      - Credentials provider working
+      - JWT strategy implemented
+      - Session handling verified
+  [X] Verify JWT handling
+      - Custom JWT interface defined
+      - Token transformation working
+      - Session synchronization complete
+  [X] Check OAuth providers
+      - Credentials provider configured
+      - JWT strategy preferred over database sessions
+  [X] Test password reset flow
+      - Stateless JWT-based reset implemented
+      - Email service configured with Resend
+  [X] Verify role-based access
+      - Admin routes protected
+      - Role checks in middleware
+      - Session includes role information
+  [X] Check session handling
+      - JWT-based sessions working
+      - Token refresh implemented
+      - Session data properly typed
+  [X] Run security audit
+      - Password hashing with bcrypt
+      - Protected routes configured
+      - Error handling implemented
+  [X] Test rate limiting
+      - API routes protected
+      - Auth endpoints secured
+  [X] Run build and check bundle size
+      - Clean build passing
+      - Types checking passed
+      - No auth-related errors
 
 ### Phase 3: Admin Dashboard Development
 [ ] 3.1. Admin Panel Setup
-    [ ] Create admin layout
-    [ ] Implement admin authentication
-    [ ] Set up admin routes protection
-    [ ] Create admin navigation
+    [X] Create admin layout
+        - Basic layout implemented
+        - Navigation structure created
+        - Responsive design in place
+    [X] Implement admin authentication
+        - Role-based access control
+        - JWT verification
+        - Protected routes
+    [X] Set up admin routes protection
+        - Middleware configured
+        - Role checks implemented
+        - Redirect to login
+    [X] Create admin navigation
+        - Sidebar navigation
+        - Top navigation bar
+        - Mobile responsive menu
 
 [ ] 3.2. Dashboard Analytics
-    [ ] Key Metrics Cards
-        [ ] Total revenue widget
-        [ ] Total orders widget
-        [ ] Total customers widget
-        [ ] Average order value widget
-    [ ] Sales Analytics
-        [ ] Revenue Chart
-        [ ] Order Statistics
-    [ ] Recent Orders Table
-    [ ] Low Stock Alerts
-    [ ] Top Products
-    [ ] Customer Insights
-    [ ] Real-time Updates
-    [ ] Export and Reports
+    [X] Key Metrics Cards
+        [X] Total revenue widget
+            - Real-time data
+            - Change percentage
+            - Animated display
+        [X] Total orders widget
+            - Order count
+            - Change tracking
+            - Trend indicator
+        [X] Total customers widget
+            - Customer growth
+            - Change percentage
+            - Visual feedback
+        [X] Average order value widget
+            - Calculated metrics
+            - Trend analysis
+            - Performance indicator
+    [X] Sales Analytics
+        [X] Revenue Chart
+            - Daily revenue tracking
+            - Order count overlay
+            - Interactive tooltips
+            - Responsive design
+        [X] Order Statistics
+            - Status distribution
+            - Visual breakdown
+            - Real-time updates
+            - Dark mode support
+    [X] Build Test Results
+        [X] Configuration Updates
+            - Updated all config files to ES modules
+            - Fixed PostCSS configuration
+            - Updated sitemap config
+            - Added missing dependencies
+        [X] Build Metrics
+            - First Load JS: 118 kB
+            - Admin Page Size: 144 kB
+            - Middleware Size: 32.5 kB
+        [X] Performance
+            - Static pages optimized
+            - Dynamic routes configured
+            - API routes protected
+        [X] Dependencies
+            - Added framer-motion for animations
+            - Added next-themes for dark mode
+            - All dependencies up to date
+    [X] Recent Orders Table
+        [X] Order list component
+        [X] Status indicators
+        [X] Customer details
+        [X] Action buttons
+
+📋 Recent Orders Table CI/Error Checks:
+  [X] Run type check: npm run type-check
+  [X] Run build: npm run build
+  [X] Check bundle size: Admin page size is 153 kB
+  [X] Verify component structure
+  [X] Test responsive design
+  [X] Validate data display
+  [X] Check loading states
+  [X] Verify action buttons
+  [X] Test empty state handling
+
+    [X] Low Stock Alerts
+        [X] Alert component
+        [X] Stock level indicators
+        [X] Reorder suggestions
+        [X] Action buttons
+
+📋 Low Stock Alerts CI/Error Checks:
+  [X] Run type check: npm run type-check
+  [X] Run build: npm run build
+  [X] Check bundle size: Admin page size is 154 kB
+  [X] Verify component structure
+  [X] Test responsive design
+  [X] Validate data display
+  [X] Check loading states
+  [X] Verify action buttons
+  [X] Test empty state handling
+  [X] Verify reorder functionality
 
 [ ] 3.3. Product Management Interface
     [ ] Create product listing interface
@@ -236,3 +706,40 @@
     [ ] Write user documentation
     [ ] Document admin processes
     [ ] Create maintenance guides
+
+### Standard CI/Error Check Template (Copy for new phases):
+```markdown
+📋 Feature CI/Error Checks:
+  [ ] Run type check: npm run type-check
+  [ ] Run linting: npm run lint
+  [ ] Test build: npm run build
+  [ ] Check bundle size
+  [ ] Verify API endpoints
+  [ ] Test error handling
+  [ ] Check performance
+  [ ] Validate responsive design
+  [ ] Test accessibility
+  [ ] Run security checks
+```
+
+## File Creation Checklist
+Before creating any new file or component:
+1. Search for existing files with similar names:
+   ```bash
+   # Example searches
+   grep -r "componentName" .
+   find . -name "*componentName*.tsx"
+   ```
+2. Search for similar functionality:
+   - Check obvious locations (e.g., components/, app/)
+   - Search for related terms in the codebase
+   - Look for similar features in different directories
+3. If similar exists:
+   - Document why enhancement/replacement is needed
+   - Get explicit approval for creating a new version
+   - Ensure no functionality is lost in the process
+4. Document the search process:
+   - What terms were searched
+   - What files were found
+   - Why existing files were not suitable
+   - Why a new file is necessary

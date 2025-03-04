@@ -1,3 +1,59 @@
+# EStore - Your One-Stop Shop
+
+## Image Requirements
+
+The following images are required for the eBay listings import:
+
+1. Category Images (1200x800px recommended):
+   - `/public/images/industrial.webp` - Industrial & Electrical Equipment category
+   - `/public/images/books.webp` - Books & Literature category
+   - `/public/images/textbooks.webp` - Textbooks & Educational category
+   - `/public/images/coins.webp` - Coins & Collectibles category
+
+2. Product Images:
+   - `/public/images/placeholder.webp` - Default placeholder for products (800x800px recommended)
+
+Please ensure these images are present in the correct locations before running the import script.
+
+## Running the eBay Import
+
+1. Place your eBay listings CSV file in the `data` directory as `ebay-listings.csv`
+2. Ensure all required images are in place
+3. Run the import script:
+   ```bash
+   npm run import-ebay
+   ```
+
+## Development
+
+```bash
+# Install dependencies
+npm install
+
+# Run development server
+npm run dev
+
+# Build for production
+npm run build
+
+# Start production server
+npm run start
+```
+
+## Environment Variables
+
+Create a `.env.local` file with the following variables:
+
+```env
+DATABASE_URL="postgresql://user:password@localhost:5432/estore"
+NEXTAUTH_URL="http://localhost:3000"
+NEXTAUTH_SECRET="your-secret-key"
+```
+
+## License
+
+MIT
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started

@@ -5,25 +5,25 @@ import { type ImageProps } from 'next/image'
 
 // Stable Unsplash image IDs for different categories
 const CATEGORY_IMAGES = {
-  'Books & Literature': '1497366216548-37526070297c',
-  'Textbooks & Educational': '1532012197267-da84d127e765',
-  'Industrial & Electrical Equipment': '1581091226825-a6a2a5aee158',
-  'Coins & Collectibles': '1544711716-f5b5f667b1ef',
-  default: '1481627834876-b7833e8f5570'
+  'Books & Literature': '1495446968020-f0f95c221cdc',
+  'Textbooks & Educational': '1497633762106-0aef74e45c21',
+  'Industrial & Electrical Equipment': '1581093806997-87c6d06d2da2',
+  'Coins & Collectibles': '1622188686217-c8fdfc6ec066',
+  default: '1517842645767-c639042777db'
 } as const
 
 const PRODUCT_IMAGES = {
-  'Advanced Mathematics Textbook': '1532012197267-da84d127e765',
-  'The Art of Programming': '1516116412805-563d82d76e96',
-  'Emerson Control System': '1581091226825-a6a2a5aee158',
+  'Advanced Mathematics Textbook': '1497633762106-0aef74e45c21',
+  'The Art of Programming': '1517842645767-c639042777db',
+  'Emerson Control System': '1581093806997-87c6d06d2da2',
   'EATON Circuit Breaker': '1581094794767-c8c2ec9f9678',
-  'Rare Silver Dollar 1921': '1544711716-f5b5f667b1ef',
-  default: '1481627834876-b7833e8f5570'
+  'Rare Silver Dollar 1921': '1622188686217-c8fdfc6ec066',
+  default: '1517842645767-c639042777db'
 } as const
 
-const HERO_IMAGE = '1556740758-90de374c12ad'
+const HERO_IMAGE = '1472851294608-062f824d29cc'
 
-export interface ImageConfig {
+export interface ImageConfig extends Pick<ImageProps, 'priority'> {
   src: string
   width: number
   height: number
@@ -33,20 +33,26 @@ export interface ImageConfig {
 }
 
 // Use a CDN-backed URL for better performance and caching
-export const getUnsplashUrl = (id: string, width: number, height: number, quality: number = 80): string => {
+export const getUnsplashUrl = (id: string, width: number, height: number, quality: number = 75): string => {
   if (!id) return getUnsplashUrl(PRODUCT_IMAGES.default, width, height, quality)
   
-  // Use Unsplash's CDN URL format
-  const baseUrl = 'https://images.unsplash.com/photo-'
-  const params = new URLSearchParams({
-    auto: 'format',
-    fit: 'crop',
-    w: width.toString(),
-    h: height.toString(),
-    q: quality.toString(),
-  })
-  
-  return `${baseUrl}${id}?${params.toString()}`
+  try {
+    // Ensure the ID starts with https:// for Next.js Image component
+    const imageUrl = `https://images.unsplash.com/photo-${id}`
+    const params = new URLSearchParams({
+      auto: 'format',
+      fit: 'crop',
+      w: width.toString(),
+      h: height.toString(),
+      q: quality.toString()
+    })
+    
+    return `${imageUrl}?${params.toString()}`
+  } catch (error) {
+    console.error('Error constructing Unsplash URL:', error)
+    // Return default image URL if there's an error
+    return getUnsplashUrl(PRODUCT_IMAGES.default, width, height, quality)
+  }
 }
 
 export const getPlaceholderImage = (category: string, size: string = '800x600'): ImageConfig => {
@@ -61,7 +67,7 @@ export const getPlaceholderImage = (category: string, size: string = '800x600'):
     width,
     height,
     alt: `${category} category image`,
-    fallback: CATEGORY_IMAGES.default
+    fallback: getUnsplashUrl(CATEGORY_IMAGES.default, width, height)
   }
 }
 
@@ -76,13 +82,7 @@ export const getProductImage = (productName: string): ImageConfig => {
     width: 800,
     height: 600,
     alt: `Product image of ${productName}`,
-    fallback: PRODUCT_IMAGES.default
-  }
-
-  // Pre-warm the image by creating a new Image object
-  if (typeof window !== 'undefined') {
-    const img = new Image()
-    img.src = config.src
+    fallback: getUnsplashUrl(PRODUCT_IMAGES.default, 800, 600)
   }
 
   return config
@@ -98,7 +98,8 @@ export const getHeroImage = (): ImageConfig => {
     width: 1920,
     height: 600,
     alt: 'Ecommerce store hero image',
-    fallback: PRODUCT_IMAGES.default
+    priority: true,
+    fallback: getUnsplashUrl(PRODUCT_IMAGES.default, 1920, 600)
   }
 }
 
@@ -109,7 +110,7 @@ export const getFallbackImage = (): ImageConfig => {
     width: 800,
     height: 600,
     alt: 'Product image placeholder',
-    fallback: PRODUCT_IMAGES.default
+    fallback: getUnsplashUrl(PRODUCT_IMAGES.default, 800, 600)
   }
 }
 

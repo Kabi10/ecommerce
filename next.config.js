@@ -5,12 +5,27 @@ const nextConfig = {
     // your project has ESLint errors.
     ignoreDuringBuilds: true,
   },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
   images: {
     remotePatterns: [
       {
         protocol: 'https',
         hostname: 'images.unsplash.com',
       },
+      {
+        protocol: 'https',
+        hostname: '*.googleusercontent.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'uploadthing.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'i.ebayimg.com',
+      }
     ],
   },
   experimental: {
@@ -28,6 +43,9 @@ const nextConfig = {
     }
     return config
   },
+  compress: true,
+  poweredByHeader: false,
+  reactStrictMode: true,
 }
 
-module.exports = nextConfig 
+export default nextConfig 

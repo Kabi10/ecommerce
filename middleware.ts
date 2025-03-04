@@ -1,17 +1,29 @@
-import { auth } from './auth'
+import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
+import { auth } from '@/auth'
 
-// Export a minimal middleware that only handles auth
-export default auth()
+// Export a middleware function that handles auth
+export async function middleware(request: NextRequest) {
+  const session = await auth()
+  
+  // Check if the request is for the admin area
+  if (request.nextUrl.pathname.startsWith('/admin')) {
+    // If not logged in or not an admin, redirect to login
+    if (!session || session.user.role !== 'ADMIN') {
+      const url = new URL('/auth/signin', request.url)
+      url.searchParams.set('callbackUrl', request.nextUrl.pathname)
+      return NextResponse.redirect(url)
+    }
+  }
+  
+  return NextResponse.next()
+}
 
 export const config = {
   matcher: [
-    // Auth, webhooks, and protected routes
-    '/api/auth/:path*',
-    '/api/webhooks/:path*',
-    '/checkout/:path*',
-    '/dashboard/:path*',
+    // Protected routes that require authentication
     '/admin/:path*',
-    // All routes except static files and api
-    '/((?!api|_next/static|_next/image|favicon.ico).*)'
+    '/dashboard/:path*',
+    '/checkout/:path*',
   ]
 } 
