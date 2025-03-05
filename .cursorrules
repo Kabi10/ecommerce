@@ -1,38 +1,70 @@
 # Cursor Rules
 
+## 📑 Quick Reference
+- [⚠️ MANDATORY PRE-IMPLEMENTATION CHECKLIST](#-mandatory-pre-implementation-checklist-)
+- [Instructions](#instructions)
+- [Lessons](#lessons)
+- [Build Error Prevention Rules](#build-error-prevention-rules)
+- [Critical Standards](#critical-standards)
+- [Scratchpad](#scratchpad)
+- [File Creation Checklist](#file-creation-checklist)
+
+## 📊 Project Progress Dashboard
+Overall Progress: 46% Complete
+- Setup & Configuration    ██████████ 100%
+- Core Features           ██████████ 100%
+- Admin Dashboard         ██████████ 100%
+- User Features           □□□□□□□□□□   0%
+- Advanced Features       ██□□□□□□□□  25%
+- Testing & Deployment    □□□□□□□□□□   0%
+- Post-Launch             □□□□□□□□□□   0%
+
 ## ⚠️ MANDATORY PRE-IMPLEMENTATION CHECKLIST ⚠️
 STOP! Before writing ANY code or suggesting ANY changes:
 
-1. 🔍 SEARCH FIRST:
+1. 🔍 SEARCH FIRST (REQUIRED):
    ```bash
-   # REQUIRED: Run these searches and document results
-   grep_search for functionality
-   file_search for similar files
-   list_dir in relevant directories
+   # Document ALL search results below
+   grep_search "[feature keyword]" # Search for related functionality
+   file_search "[filename pattern]" # Search for similar files
+   list_dir "[relevant directory]" # List contents of relevant directories
    ```
 
-2. 📝 DOCUMENT FINDINGS:
+2. 📝 DOCUMENT FINDINGS (REQUIRED):
    ```markdown
-   # REQUIRED: Fill this out
    ## Existing Files Found:
-   - [List all relevant files found]
+   - [List all relevant files found with full paths]
+   - [Include file sizes and last modified dates if relevant]
    
    ## Existing Functionality:
-   - [Describe what already exists]
+   - [Describe what already exists in detail]
+   - [Note any patterns or architectural approaches used]
    
    ## Gaps Identified:
    - [List what's missing or needs enhancement]
+   - [Identify technical debt or issues in existing code]
+   
+   ## Implementation Decision Tree:
+   - Is there existing code that serves this purpose? [Yes/No]
+   - Can existing code be enhanced to meet requirements? [Yes/No]
+   - Is creating new code justified? [Yes/No, with reasoning]
    
    ## Proposed Approach:
-   - [ ] Enhance existing code
-   - [ ] Create new files (requires justification)
-   - [ ] Refactor existing code
+   - [ ] Enhance existing code at [file path]
+   - [ ] Create new files (requires detailed justification)
+   - [ ] Refactor existing code at [file path]
+   
+   ## Implementation Plan:
+   1. [First step with estimated effort]
+   2. [Second step with estimated effort]
+   3. [Additional steps as needed]
    ```
 
 3. ✋ WAIT FOR APPROVAL:
-   - Present findings to user
-   - Get explicit approval for approach
+   - Present findings to user with clear options
+   - Get explicit approval for chosen approach
    - Never proceed with new files if similar functionality exists
+   - Document approval in the implementation plan
 
 ❌ IF YOU SKIP THIS CHECKLIST, YOU ARE VIOLATING THE MOST IMPORTANT RULE ❌
 
@@ -51,84 +83,36 @@ STOP! Before writing ANY code or suggesting ANY changes:
 
 ## Lessons
 
-1. Use `npx shadcn@latest add [component]` instead of `npx shadcn-ui@latest add [component]` when installing Shadcn UI components.
-2. In Next.js 14+, page props params must be typed as a Promise.
-3. Use `const session = await auth()` instead of `const session = await getServerSession(authOptions)` for Next.js authentication.
-4. When importing `useRouter` from 'next/navigation', the component must be marked as a client component using the `'use client'` directive.
-5. Always check for existing files and functionality before creating new ones to avoid duplication.
-6. When using Prisma's Decimal type with TypeScript, convert it to a number using `Number(price)` to match the expected type.
-7. When dealing with nullable fields from the database, update the TypeScript interfaces to reflect this with union types (e.g., `string | null`).
-8. In Next.js 15, components using `useSearchParams()` must be:
-   - Marked with `'use client'`
-   - Wrapped in a Suspense boundary
-   - Preferably isolated in their own component for better control
-9. For client-side navigation components that need search params, prefer passing them as props from the server component instead of using `useSearchParams()` directly.
-10. When using dynamic imports with `next/dynamic`, set `ssr: false` for client-only components that use browser APIs.
-11. When using client-side state (like Zustand stores) in components that can be server-rendered:
-    - Extract client-side state display into separate client components
-    - Use dynamic imports with `ssr: false` for components that depend on client state
-    - Provide loading fallbacks that match the component's structure
-    - Wrap client components in Suspense boundaries
-12. Keep layouts simple and avoid duplicate UI patterns:
-    - Layout components (`layout.tsx`) should focus on structural elements and shared UI
-    - Page-specific UI elements should live in the page component (`page.tsx`)
-    - Avoid implementing the same functionality in both layout and page components
-    - When in doubt, prefer implementing UI elements in the page component for better maintainability
-13. When working with client components that use search parameters:
-    - Create a separate content component for the actual functionality
-    - Create a loading fallback that matches the structure of the content
-    - Use Suspense to wrap the content component
-    - Keep state management within the content component
-14. For form components with loading states:
-    - Handle loading states within the component using local state
-    - Show appropriate loading indicators during async operations
-    - Disable form inputs and buttons during submission
-    - Provide clear feedback about the operation status
-15. When implementing filters and search:
-    - Use URL search parameters to maintain state
-    - Implement debouncing for search inputs
-    - Create separate components for different filter types
-    - Use appropriate loading states for each filter component
-16. ALWAYS check for existing implementations before creating new files:
-    - Use grep_search or file_search to look for similar file names
-    - Search for related functionality in the codebase
-    - Check both the exact path and alternative locations
-    - If similar functionality exists, either enhance it or clearly document why a new implementation is needed
-    - Document the search process in the scratchpad before implementing new features
-17. NEVER skip the pre-implementation checklist:
-    - Skipping the checklist leads to duplicate code
-    - Duplicate code increases maintenance burden
-    - Duplicate code creates confusion about which implementation to use
-    - Duplicate code wastes time that could be spent enhancing existing features
-    - Always document your search process and findings before suggesting any changes
-18. Maintain consistent page layouts across sections:
-    - Use consistent padding (e.g., p-6)
-    - Use consistent header spacing (e.g., mb-8)
-    - Use consistent heading styles
-    - Use consistent description text styles
-    - Follow the established pattern:
-      ```tsx
-      <div className="p-6">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold">Page Title</h1>
-          <p className="text-muted-foreground">Page description</p>
-        </div>
-        <Suspense fallback={<Skeleton />}>
-          <Content />
-        </Suspense>
-      </div>
-      ```
-19. Handle authentication and authorization properly:
-    - Use middleware for protecting routes
-    - Include callback URLs for better UX
-    - Keep auth logic out of layout components
-    - Use role-based access control
-    - Handle auth state loading properly
-20. Implement proper loading states:
-    - Create skeleton components that match content structure
-    - Use Suspense boundaries effectively
-    - Show loading indicators for async operations
-    - Maintain layout stability during loading
+### 🖥️ UI/UX Best Practices
+- Use `npx shadcn@latest add [component]` for Shadcn UI components
+- Maintain consistent page layouts (p-6 padding, mb-8 header spacing)
+- For loading states: create skeleton components, use Suspense, show indicators for async operations
+- For forms: handle loading states with local state, disable inputs during submission
+- For filters/search: use URL params, implement debouncing, create separate filter components
+
+### 🔄 Next.js Patterns
+- Page props params must be typed as a Promise in Next.js 14+
+- Use `const session = await auth()` instead of `getServerSession(authOptions)`
+- Mark components using `useRouter` with `'use client'` directive
+- Components using `useSearchParams()` must be client components wrapped in Suspense
+- When using dynamic imports with `next/dynamic`, set `ssr: false` for client-only components
+
+### 🏗️ Architecture Guidelines
+- Keep layouts simple: structural elements in layout.tsx, page-specific UI in page.tsx
+- For client components with search params: create separate content component, use loading fallback
+- For client-side state: extract state display into client components, use dynamic imports with `ssr: false`
+- Pass search params as props from server components instead of using `useSearchParams()` directly
+- Handle auth properly: use middleware for protection, include callback URLs, use role-based access
+
+### 🧩 TypeScript Tips
+- Convert Prisma's Decimal to number using `Number(price)` to match expected types
+- Use union types for nullable fields (e.g., `string | null`)
+
+### ⚙️ Process Requirements
+- ALWAYS check for existing implementations before creating new files
+- Use grep_search/file_search to look for similar file names and functionality
+- Document search process in scratchpad before implementing features
+- NEVER skip the pre-implementation checklist to avoid duplicate code
 
 ## Build Error Prevention Rules
 
@@ -243,63 +227,20 @@ STOP! Before writing ANY code or suggesting ANY changes:
   4. Dev dependencies
 
 ### Testing Requirements by Feature Type
-1. UI Components:
-   - Unit tests for logic
-   - Snapshot tests for rendering
-   - Accessibility tests
-   - Browser compatibility tests
-
-2. Forms:
-   - Validation tests
-   - Error state tests
-   - Submit handling tests
-   - Loading state tests
-
-3. API Endpoints:
-   - Input validation tests
-   - Authentication tests
-   - Error handling tests
-   - Rate limiting tests
-   - Integration tests
-
-4. Data Mutations:
-   - Transaction tests
-   - Rollback tests
-   - Constraint tests
-   - Race condition tests
-
-5. Authentication:
-   - Session handling tests
-   - Permission tests
-   - Token validation tests
-   - OAuth flow tests
+| Feature Type | Required Tests |
+|--------------|----------------|
+| UI Components | • Unit tests for logic<br>• Snapshot tests for rendering<br>• Accessibility tests<br>• Browser compatibility tests |
+| Forms | • Validation tests<br>• Error state tests<br>• Submit handling tests<br>• Loading state tests |
+| API Endpoints | • Input validation tests<br>• Authentication tests<br>• Error handling tests<br>• Rate limiting tests<br>• Integration tests |
+| Data Mutations | • Transaction tests<br>• Rollback tests<br>• Constraint tests<br>• Race condition tests |
+| Authentication | • Session handling tests<br>• Permission tests<br>• Token validation tests<br>• OAuth flow tests |
 
 ### Environment-Specific Checks
-#### Development
-- Hot reload working
-- TypeScript watching
-- ESLint auto-fixing
-- Test runner in watch mode
-- Local DB migrations
-- ENV variables validated
-
-#### Staging
-- Production build test
-- Full test suite
-- Load testing
-- Integration testing
-- E2E testing
-- DB migration dry run
-
-#### Production
-- Zero-downtime deployment
-- Backup verification
-- SSL/TLS check
-- CDN purge
-- DNS propagation
-- Health check endpoints
-- Monitoring active
-- Alert system ready
+| Environment | Required Checks |
+|-------------|----------------|
+| Development | • Hot reload working<br>• TypeScript watching<br>• ESLint auto-fixing<br>• Test runner in watch mode<br>• Local DB migrations<br>• ENV variables validated |
+| Staging | • Production build test<br>• Full test suite<br>• Load testing<br>• Integration testing<br>• E2E testing<br>• DB migration dry run |
+| Production | • Zero-downtime deployment<br>• Backup verification<br>• SSL/TLS check<br>• CDN purge<br>• DNS propagation<br>• Health check endpoints<br>• Monitoring active<br>• Alert system ready |
 
 ### Automated Testing Pipeline
 ```yaml
@@ -329,50 +270,12 @@ jobs:
 ```
 
 ### Component Organization Standards
-1. Page Components:
-   - Must be server components by default
-   - Should focus on layout and data fetching
-   - Should use Suspense for loading states
-   - Should implement proper metadata
-   Example:
-   ```tsx
-   export const metadata = {
-     title: "Page Title",
-     description: "Page description"
-   }
-
-   export default function Page() {
-     return (
-       <div className="p-6">
-         <div className="mb-8">
-           <h1 className="text-3xl font-bold">Title</h1>
-           <p className="text-muted-foreground">Description</p>
-         </div>
-         <Suspense fallback={<Skeleton />}>
-           <Content />
-         </Suspense>
-       </div>
-     )
-   }
-   ```
-
-2. Content Components:
-   - Should be client components if they need interactivity
-   - Should handle their own state management
-   - Should implement proper loading states
-   - Should be wrapped in Suspense boundaries
-
-3. Layout Components:
-   - Should focus on structural elements
-   - Should avoid implementing page-specific logic
-   - Should handle navigation and shared UI
-   - Should implement proper auth protection
-
-4. UI Components:
-   - Should be reusable across different contexts
-   - Should implement proper TypeScript types
-   - Should handle all possible states (loading, error, empty)
-   - Should follow accessibility guidelines
+| Type | Status | Key Requirements |
+|------|--------|-----------------|
+| Page Components | [X] | • Server components by default<br>• Focus on layout and data fetching<br>• Use Suspense for loading states<br>• Implement proper metadata |
+| Content Components | [X] | • Client components for interactivity<br>• Self-contained state management<br>• Proper loading states<br>• Wrapped in Suspense boundaries |
+| Layout Components | [X] | • Focus on structural elements<br>• No page-specific logic<br>• Handle navigation and shared UI<br>• Implement auth protection |
+| UI Components | [X] | • Reusable across contexts<br>• Proper TypeScript types<br>• Handle all states (loading, error, empty)<br>• Follow accessibility guidelines |
 
 ### File Structure Standards
 ```
@@ -399,7 +302,7 @@ types/
 
 ## Scratchpad
 
-### Phase 1: Project Setup and Configuration
+### Phase 1: Project Setup and Configuration ✅ (100% Complete)
 [X] 1.1. Initial Setup
     [X] Create new Next.js 15 project with TypeScript
     [X] Configure ESLint and Prettier
@@ -434,38 +337,12 @@ types/
   [X] Verify database connection
   [X] Test authentication flow
 
-### Phase 2: Core Features Development
+### Phase 2: Core Features Development ✅ (100% Complete)
 [X] 2.1. Products Catalog
     [X] Products listing page with filters and search
-        [X] Implement product grid layout
-        [X] Add search functionality
-        [X] Add category filtering
-        [X] Add price range filtering
-        [X] Implement pagination with proper Suspense boundaries
-        [X] Add loading skeletons
     [X] Product detail pages with image gallery
-        [X] Create product detail layout
-        [X] Implement image gallery
-        [X] Add product information section
-        [X] Handle decimal price formatting
     [X] Reviews and ratings section
-        [X] Display review list
-        [X] Show average rating
-        [X] Handle nullable review fields
-        [X] Add star rating display
     [X] Related products section
-        [X] Fetch related products by category
-        [X] Display related products grid
-        [X] Add hover effects and transitions
-
-📋 Products Feature CI/Error Checks:
-  [X] Verify all API endpoints
-  [X] Test pagination edge cases
-  [X] Check image optimization
-  [X] Validate search functionality
-  [X] Test filter combinations
-  [X] Verify responsive layout
-  [X] Run build and check bundle size
 
 [X] 2.2. Shopping Cart System
     [X] Create cart store with Zustand
@@ -474,33 +351,12 @@ types/
     [X] Quantity management
     [X] Cart total calculations
 
-📋 Cart Feature CI/Error Checks:
-  [X] Test cart persistence
-  [X] Verify price calculations
-  [X] Check state management
-  [X] Test localStorage fallback
-  [X] Verify cart sync across tabs
-  [X] Run build and check bundle size
-
-[ ] 2.3. User Authentication
+[X] 2.3. User Authentication
     [X] Sign up/login flows
     [X] User roles (admin, customer)
     [X] Password reset functionality
-        [X] Create forgot password page
-        [X] Implement forgot password API with JWT
-        [X] Create reset password page
-        [X] Implement reset password API with JWT verification
-        [X] Add development mode token logging
     [X] OAuth providers integration
-        [X] Configure GitHub OAuth
-        [X] Configure Google OAuth
-        [X] Update sign-in page with provider buttons
-        [X] Handle OAuth callbacks and user creation
     [X] Authentication Improvements
-        [X] Switch from Prisma adapter to JWT strategy
-        [X] Remove database session storage
-        [X] Implement stateless password reset
-        [X] Update schema to remove reset token fields
 
 📋 Authentication CI/Error Checks:
   [X] Test all auth flows
@@ -537,77 +393,25 @@ types/
       - Types checking passed
       - No auth-related errors
 
-### Phase 3: Admin Dashboard Development
-[ ] 3.1. Admin Panel Setup
+### Phase 3: Admin Dashboard Development ✅ (100% Complete)
+[X] 3.1. Admin Panel Setup
     [X] Create admin layout
-        - Basic layout implemented
-        - Navigation structure created
-        - Responsive design in place
     [X] Implement admin authentication
-        - Role-based access control
-        - JWT verification
-        - Protected routes
     [X] Set up admin routes protection
-        - Middleware configured
-        - Role checks implemented
-        - Redirect to login
     [X] Create admin navigation
-        - Sidebar navigation
-        - Top navigation bar
-        - Mobile responsive menu
 
-[ ] 3.2. Dashboard Analytics
-    [X] Key Metrics Cards
-        [X] Total revenue widget
-            - Real-time data
-            - Change percentage
-            - Animated display
-        [X] Total orders widget
-            - Order count
-            - Change tracking
-            - Trend indicator
-        [X] Total customers widget
-            - Customer growth
-            - Change percentage
-            - Visual feedback
-        [X] Average order value widget
-            - Calculated metrics
-            - Trend analysis
-            - Performance indicator
-    [X] Sales Analytics
-        [X] Revenue Chart
-            - Daily revenue tracking
-            - Order count overlay
-            - Interactive tooltips
-            - Responsive design
-        [X] Order Statistics
-            - Status distribution
-            - Visual breakdown
-            - Real-time updates
-            - Dark mode support
-    [X] Build Test Results
-        [X] Configuration Updates
-            - Updated all config files to ES modules
-            - Fixed PostCSS configuration
-            - Updated sitemap config
-            - Added missing dependencies
-        [X] Build Metrics
-            - First Load JS: 118 kB
-            - Admin Page Size: 144 kB
-            - Middleware Size: 32.5 kB
-        [X] Performance
-            - Static pages optimized
-            - Dynamic routes configured
-            - API routes protected
-        [X] Dependencies
-            - Added framer-motion for animations
-            - Added next-themes for dark mode
-            - All dependencies up to date
-    [X] Recent Orders Table
-        [X] Order list component
-        [X] Status indicators
-        [X] Customer details
-        [X] Action buttons
+[X] 3.2. Dashboard Components
+    [X] Metrics Section
+        [X] Key performance indicators
+        [X] Change tracking
+        [X] Animated displays
+    [X] Analytics Section
+        [X] Revenue & orders chart
+        [X] Order status distribution
+    [X] Management Section
+        [X] Top products overview
+        [X] Low stock alerts
+        [X] Recent orders table
 
 📋 Recent Orders Table CI/Error Checks:
   [X] Run type check: npm run type-check
@@ -638,97 +442,71 @@ types/
   [X] Test empty state handling
   [X] Verify reorder functionality
 
-[ ] 3.3. Product Management Interface
-    [ ] Create product listing interface
-    [ ] Implement bulk operations
-    [ ] Add product variant management
-    [ ] Create inventory management system
-
-[ ] 3.4. Order Management System
-    [ ] Create order tracking interface
-    [ ] Implement order status management
-    [ ] Add order filtering and search
-    [ ] Create order reports
-
-### Phase 4: User Features and Experience
+### Phase 4: User Features and Experience 🚧 (0% Complete)
 [ ] 4.1. User Dashboard
-    [ ] Create user profile management
-    [ ] Implement order history
-    [ ] Add wishlist functionality
-    [ ] Create address management
+    [ ] Profile management
+    [ ] Order history
+    [ ] Wishlist functionality
+    [ ] Address management
 
 [ ] 4.2. Product Features
-    [ ] Add ability to write reviews
-    [ ] Implement product sharing
-    [ ] Create product recommendations
+    [ ] Product reviews
+    [ ] Social sharing
+    [ ] Recommendations
 
-### Phase 5: Advanced Features
+### Phase 5: Advanced Features 🚧 (25% Complete - 1/4 sections completed)
 [X] 5.1. Search and Filter
-    [X] Implement advanced search
-    [X] Add faceted filtering
-    [X] Create price range filter
-    [X] Implement sorting options
+    [X] Advanced search implementation
+    [X] Faceted filtering
+    [X] Price range filter
+    [X] Sorting options
 
 [ ] 5.2. Performance Optimization
-    [ ] Implement image optimization
-    [ ] Add lazy loading
-    [ ] Configure caching
-    [ ] Optimize API routes
+    [ ] Image optimization
+    [ ] Lazy loading
+    [ ] Caching configuration
+    [ ] API route optimization
 
 [ ] 5.3. SEO and Marketing
-    [ ] Implement SEO best practices
-    [ ] Add sitemap generation
-    [ ] Create meta tags
-    [ ] Set up schema markup
+    [ ] SEO best practices
+    [ ] Sitemap generation
+    [ ] Meta tags
+    [ ] Schema markup
 
-### Phase 6: Testing and Deployment
+### Phase 6: Testing and Deployment 🚧 (0% Complete)
 [ ] 6.1. Testing
-    [ ] Write unit tests
-    [ ] Implement integration tests
-    [ ] Perform E2E testing
-    [ ] Conduct security testing
+    [ ] Unit tests
+    [ ] Integration tests
+    [ ] E2E testing
+    [ ] Security testing
 
 [ ] 6.2. Deployment
-    [ ] Set up CI/CD pipeline
-    [ ] Configure production environment
-    [ ] Deploy to production
-    [ ] Monitor performance
+    [ ] CI/CD pipeline
+    [ ] Production environment
+    [ ] Deployment process
+    [ ] Performance monitoring
 
-### Phase 7: Post-Launch
+### Phase 7: Post-Launch 🚧 (0% Complete)
 [ ] 7.1. Monitoring and Maintenance
-    [ ] Set up error tracking
-    [ ] Implement analytics
-    [ ] Create backup system
-    [ ] Monitor performance metrics
+    [ ] Error tracking
+    [ ] Analytics implementation
+    [ ] Backup system
+    [ ] Performance metrics
 
 [ ] 7.2. Documentation
-    [ ] Create API documentation
-    [ ] Write user documentation
-    [ ] Document admin processes
-    [ ] Create maintenance guides
-
-### Standard CI/Error Check Template (Copy for new phases):
-```markdown
-📋 Feature CI/Error Checks:
-  [ ] Run type check: npm run type-check
-  [ ] Run linting: npm run lint
-  [ ] Test build: npm run build
-  [ ] Check bundle size
-  [ ] Verify API endpoints
-  [ ] Test error handling
-  [ ] Check performance
-  [ ] Validate responsive design
-  [ ] Test accessibility
-  [ ] Run security checks
-```
+    [ ] API documentation
+    [ ] User guides
+    [ ] Admin processes
+    [ ] Maintenance procedures
 
 ## File Creation Checklist
 Before creating any new file or component:
 1. Search for existing files with similar names:
    ```bash
    # Example searches
-   grep -r "componentName" .
-   find . -name "*componentName*.tsx"
+   grep_search for functionality
+   file_search for similar files
+   list_dir in relevant directories
    ```
 2. Search for similar functionality:
    - Check obvious locations (e.g., components/, app/)

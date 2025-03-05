@@ -33,6 +33,7 @@ import {
 import Link from "next/link"
 import Image from "next/image"
 import { useToast } from "@/components/ui/use-toast"
+import { BulkUpdateDialog } from "./bulk-update-dialog"
 
 export interface Product {
   id: string
@@ -50,20 +51,36 @@ export interface Product {
   }
 }
 
+interface Category {
+  id: string
+  name: string
+}
+
+interface BulkUpdateData {
+  categoryId?: string
+  price?: number
+  stock?: number
+}
+
 interface ProductDataTableProps {
   products: Product[]
+  categories: Category[]
   onDelete: (ids: string[]) => Promise<void>
   onDuplicate: (id: string) => Promise<void>
+  onBulkUpdate: (ids: string[], data: BulkUpdateData) => Promise<void>
 }
 
 export function ProductDataTable({ 
-  products, 
+  products,
+  categories, 
   onDelete, 
-  onDuplicate 
+  onDuplicate,
+  onBulkUpdate 
 }: ProductDataTableProps) {
-  const [selectedProducts, setSelectedProducts] = useState<Set<string>>(new Set())
+  const [selectedProducts, setSelectedProducts] = useState<string[]>([])
   const [sortColumn, setSortColumn] = useState<string>("name")
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc")
+  const [updateType, setUpdateType] = useState<"category" | "price" | "stock" | null>(null)
   const [isDeleting, setIsDeleting] = useState(false)
   const { toast } = useToast()
 
@@ -94,33 +111,31 @@ export function ProductDataTable({
   })
 
   const toggleProductSelection = (id: string) => {
-    const newSelected = new Set(selectedProducts)
-    if (newSelected.has(id)) {
-      newSelected.delete(id)
+    if (selectedProducts.includes(id)) {
+      setSelectedProducts(selectedProducts.filter(i => i !== id))
     } else {
-      newSelected.add(id)
+      setSelectedProducts([...selectedProducts, id])
     }
-    setSelectedProducts(newSelected)
   }
 
   const toggleAllProducts = () => {
-    if (selectedProducts.size === products.length) {
-      setSelectedProducts(new Set())
+    if (selectedProducts.length === products.length) {
+      setSelectedProducts([])
     } else {
-      setSelectedProducts(new Set(products.map(p => p.id)))
+      setSelectedProducts(products.map(p => p.id))
     }
   }
 
   const handleDeleteSelected = async () => {
-    if (selectedProducts.size === 0) return
+    if (selectedProducts.length === 0) return
     
     try {
       setIsDeleting(true)
-      await onDelete(Array.from(selectedProducts))
-      setSelectedProducts(new Set())
+      await onDelete(selectedProducts)
+      setSelectedProducts([])
       toast({
         title: "Products deleted",
-        description: `Successfully deleted ${selectedProducts.size} product(s)`,
+        description: `Successfully deleted ${selectedProducts.length} product(s)`,
       })
     } catch (error) {
       toast({
@@ -149,6 +164,30 @@ export function ProductDataTable({
     }
   }
 
+  const handleBulkUpdate = async (value: string | number) => {
+    try {
+      if (!updateType) return
+
+      const data: BulkUpdateData = {
+        [updateType]: value
+      }
+
+      await onBulkUpdate(selectedProducts, data)
+      toast({
+        title: "Success",
+        description: "Selected products have been updated",
+      })
+      setSelectedProducts([])
+      setUpdateType(null)
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to update products",
+        variant: "destructive",
+      })
+    }
+  }
+
   if (!products?.length) {
     return (
       <div className="rounded-md border p-8 text-center">
@@ -167,18 +206,60 @@ export function ProductDataTable({
 
   return (
     <div className="space-y-4">
+      <BulkUpdateDialog
+        open={!!updateType}
+        onOpenChange={(open) => !open && setUpdateType(null)}
+        type={updateType || "category"}
+        onUpdate={handleBulkUpdate}
+        categories={categories}
+        selectedCount={selectedProducts.length}
+      />
+      
+      {selectedProducts.length > 0 && (
+        <div className="flex items-center gap-2 p-4 border rounded-lg bg-muted">
+          <span className="text-sm font-medium">
+            {selectedProducts.length} products selected
+          </span>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm">
+                Bulk Actions
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Update Selected</DropdownMenuLabel>
+              <DropdownMenuItem onClick={() => setUpdateType("category")}>
+                Update Category
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setUpdateType("price")}>
+                Update Price
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setUpdateType("stock")}>
+                Update Stock
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem 
+                className="text-destructive"
+                onClick={handleDeleteSelected}
+              >
+                Delete Selected
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      )}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Button
             variant="outline"
             size="sm"
             onClick={handleDeleteSelected}
-            disabled={selectedProducts.size === 0 || isDeleting}
+            disabled={selectedProducts.length === 0 || isDeleting}
           >
             {isDeleting ? "Deleting..." : "Delete Selected"}
           </Button>
           <span className="text-sm text-muted-foreground">
-            {selectedProducts.size} of {products.length} selected
+            {selectedProducts.length} of {products.length} selected
           </span>
         </div>
         <Link href="/admin/products/new">
@@ -192,7 +273,7 @@ export function ProductDataTable({
             <TableRow>
               <TableHead className="w-[50px]">
                 <Checkbox 
-                  checked={selectedProducts.size === products.length && products.length > 0}
+                  checked={selectedProducts.length === products.length && products.length > 0}
                   onCheckedChange={toggleAllProducts}
                   aria-label="Select all products"
                 />
@@ -231,7 +312,7 @@ export function ProductDataTable({
               <TableRow key={product.id}>
                 <TableCell>
                   <Checkbox 
-                    checked={selectedProducts.has(product.id)}
+                    checked={selectedProducts.includes(product.id)}
                     onCheckedChange={() => toggleProductSelection(product.id)}
                     aria-label={`Select ${product.name}`}
                   />

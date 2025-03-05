@@ -6,50 +6,43 @@ import { ArrowDownIcon, ArrowUpIcon, DollarSign, Package, ShoppingCart, Users } 
 import { cn } from "@/lib/utils"
 import { motion } from "framer-motion"
 
-interface MetricsCardsProps {
-  totalRevenue: number
-  revenueChange: number
-  totalOrders: number
-  orderChange: number
-  totalCustomers: number
-  customerChange: number
-  averageOrderValue: number
-  aovChange: number
+interface DashboardMetricsProps {
+  data: {
+    totalRevenue: number
+    revenueChange: number
+    totalOrders: number
+    orderChange: number
+    totalCustomers: number
+    customerChange: number
+    averageOrderValue: number
+    aovChange: number
+  }
 }
 
-export function MetricsCards({
-  totalRevenue,
-  revenueChange,
-  totalOrders,
-  orderChange,
-  totalCustomers,
-  customerChange,
-  averageOrderValue,
-  aovChange,
-}: MetricsCardsProps) {
+export function DashboardMetrics({ data }: DashboardMetricsProps) {
   const metrics = [
     {
       title: "Total Revenue",
-      value: formatCurrency(totalRevenue),
-      change: revenueChange,
+      value: formatCurrency(data.totalRevenue),
+      change: data.revenueChange,
       icon: DollarSign,
     },
     {
       title: "Total Orders",
-      value: totalOrders.toString(),
-      change: orderChange,
+      value: data.totalOrders.toString(),
+      change: data.orderChange,
       icon: ShoppingCart,
     },
     {
       title: "Total Customers",
-      value: totalCustomers.toString(),
-      change: customerChange,
+      value: data.totalCustomers.toString(),
+      change: data.customerChange,
       icon: Users,
     },
     {
       title: "Average Order Value",
-      value: formatCurrency(averageOrderValue),
-      change: aovChange,
+      value: formatCurrency(data.averageOrderValue),
+      change: data.aovChange,
       icon: Package,
     },
   ]

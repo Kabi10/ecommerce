@@ -22,6 +22,13 @@ import {
 } from "@/components/ui/table"
 import { Loader2, Plus, Trash } from "lucide-react"
 import { useToast } from "@/components/ui/use-toast"
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs"
+import { VariantMatrix } from "./variant-matrix"
 
 interface Variant {
   id: string
@@ -37,16 +44,26 @@ interface VariantOption {
   sku: string
 }
 
+interface VariantCombination {
+  id: string
+  options: { [key: string]: string }
+  price: number
+  stock: number
+  sku: string
+}
+
 interface ProductVariantsProps {
   productId: string
   initialVariants?: Variant[]
   onSave: (variants: Variant[]) => Promise<void>
+  onBulkUpdate: (combinations: VariantCombination[]) => Promise<void>
 }
 
 export function ProductVariants({
   productId,
   initialVariants = [],
   onSave,
+  onBulkUpdate,
 }: ProductVariantsProps) {
   const [variants, setVariants] = useState<Variant[]>(initialVariants)
   const [newVariantName, setNewVariantName] = useState("")
@@ -177,151 +194,165 @@ export function ProductVariants({
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
+        <div className="flex items-center gap-2">
+          <Input
+            placeholder="Enter variant name (e.g., Size, Color)"
+            value={newVariantName}
+            onChange={(e) => setNewVariantName(e.target.value)}
+            className="max-w-sm"
+          />
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={addVariant}
+            disabled={!newVariantName.trim()}
+          >
+            <Plus className="h-4 w-4" />
+          </Button>
+        </div>
+
         {variants.length === 0 ? (
           <div className="text-center py-6">
             <p className="text-muted-foreground">No variants added yet.</p>
           </div>
         ) : (
-          <div className="space-y-6">
-            {variants.map((variant) => (
-              <div key={variant.id} className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-medium">{variant.name}</h3>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => removeVariant(variant.id)}
-                  >
-                    <Trash className="h-4 w-4 mr-2" />
-                    Remove
-                  </Button>
-                </div>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Option</TableHead>
-                      <TableHead>Price</TableHead>
-                      <TableHead>Stock</TableHead>
-                      <TableHead>SKU</TableHead>
-                      <TableHead className="w-[100px]"></TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {variant.options.map((option) => (
-                      <TableRow key={option.id}>
-                        <TableCell>
-                          <Input
-                            value={option.value}
-                            onChange={(e) =>
-                              updateVariantOption(
-                                variant.id,
-                                option.id,
-                                "value",
-                                e.target.value
-                              )
-                            }
-                            placeholder={`${variant.name} value`}
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <div className="relative">
-                            <span className="absolute left-3 top-2.5">$</span>
+          <Tabs defaultValue="list">
+            <TabsList>
+              <TabsTrigger value="list">List View</TabsTrigger>
+              <TabsTrigger value="matrix">Matrix View</TabsTrigger>
+            </TabsList>
+            <TabsContent value="list" className="space-y-6">
+              {variants.map((variant) => (
+                <div key={variant.id} className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-lg font-medium">{variant.name}</h3>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => addVariantOption(variant.id)}
+                      >
+                        <Plus className="h-4 w-4 mr-2" />
+                        Add Option
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => removeVariant(variant.id)}
+                      >
+                        <Trash className="h-4 w-4 mr-2" />
+                        Remove
+                      </Button>
+                    </div>
+                  </div>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Option</TableHead>
+                        <TableHead>Price</TableHead>
+                        <TableHead>Stock</TableHead>
+                        <TableHead>SKU</TableHead>
+                        <TableHead className="w-[100px]"></TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {variant.options.map((option) => (
+                        <TableRow key={option.id}>
+                          <TableCell>
                             <Input
-                              type="number"
-                              min="0"
-                              step="0.01"
-                              value={option.price}
+                              value={option.value}
                               onChange={(e) =>
                                 updateVariantOption(
                                   variant.id,
                                   option.id,
-                                  "price",
-                                  parseFloat(e.target.value)
+                                  "value",
+                                  e.target.value
                                 )
                               }
-                              className="pl-7"
+                              placeholder={`${variant.name} value`}
                             />
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <Input
-                            type="number"
-                            min="0"
-                            step="1"
-                            value={option.stock}
-                            onChange={(e) =>
-                              updateVariantOption(
-                                variant.id,
-                                option.id,
-                                "stock",
-                                parseInt(e.target.value)
-                              )
-                            }
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <Input
-                            value={option.sku}
-                            onChange={(e) =>
-                              updateVariantOption(
-                                variant.id,
-                                option.id,
-                                "sku",
-                                e.target.value
-                              )
-                            }
-                            placeholder="SKU"
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() =>
-                              removeVariantOption(variant.id, option.id)
-                            }
-                            disabled={variant.options.length === 1}
-                          >
-                            <Trash className="h-4 w-4" />
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => addVariantOption(variant.id)}
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add Option
-                </Button>
-              </div>
-            ))}
-          </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="relative">
+                              <span className="absolute left-3 top-2.5">$</span>
+                              <Input
+                                type="number"
+                                min="0"
+                                step="0.01"
+                                value={option.price}
+                                onChange={(e) =>
+                                  updateVariantOption(
+                                    variant.id,
+                                    option.id,
+                                    "price",
+                                    parseFloat(e.target.value)
+                                  )
+                                }
+                                className="pl-7"
+                              />
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <Input
+                              type="number"
+                              min="0"
+                              step="1"
+                              value={option.stock}
+                              onChange={(e) =>
+                                updateVariantOption(
+                                  variant.id,
+                                  option.id,
+                                  "stock",
+                                  parseInt(e.target.value)
+                                )
+                              }
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <Input
+                              value={option.sku}
+                              onChange={(e) =>
+                                updateVariantOption(
+                                  variant.id,
+                                  option.id,
+                                  "sku",
+                                  e.target.value
+                                )
+                              }
+                              placeholder="SKU"
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() =>
+                                removeVariantOption(variant.id, option.id)
+                              }
+                            >
+                              <Trash className="h-4 w-4" />
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              ))}
+            </TabsContent>
+            <TabsContent value="matrix">
+              <VariantMatrix
+                variants={variants}
+                onBulkUpdate={onBulkUpdate}
+              />
+            </TabsContent>
+          </Tabs>
         )}
-
-        <div className="flex items-end gap-4">
-          <div className="flex-1 space-y-2">
-            <Label htmlFor="new-variant">New Variant Type</Label>
-            <Input
-              id="new-variant"
-              placeholder="e.g., Size, Color, Material"
-              value={newVariantName}
-              onChange={(e) => setNewVariantName(e.target.value)}
-            />
-          </div>
-          <Button onClick={addVariant} disabled={!newVariantName.trim()}>
-            <Plus className="h-4 w-4 mr-2" />
-            Add Variant
-          </Button>
-        </div>
       </CardContent>
-      <CardFooter className="flex justify-end">
+      <CardFooter>
         <Button onClick={handleSave} disabled={isSubmitting}>
           {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          Save Variants
+          Save Changes
         </Button>
       </CardFooter>
     </Card>
