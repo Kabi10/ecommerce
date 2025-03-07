@@ -1,7 +1,7 @@
 'use client'
 
 import * as React from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams, usePathname } from 'next/navigation'
 import { Input } from '@/components/ui/input'
 import { Search } from 'lucide-react'
 import { useDebounce } from '@/lib/hooks/use-debounce'
@@ -15,6 +15,7 @@ interface ProductSearchProps {
 function SearchInput({ className, placeholder = 'Search products...' }: ProductSearchProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
+  const pathname = usePathname()
   
   const [searchQuery, setSearchQuery] = React.useState(
     searchParams.get('search') || ''
@@ -23,14 +24,17 @@ function SearchInput({ className, placeholder = 'Search products...' }: ProductS
   const debouncedSearch = useDebounce(searchQuery, 300)
 
   React.useEffect(() => {
-    const params = new URLSearchParams(searchParams.toString())
-    if (debouncedSearch) {
-      params.set('search', debouncedSearch)
-    } else {
-      params.delete('search')
+    // Only update URL if we're searching or already on the products page
+    if (debouncedSearch || pathname.startsWith('/products')) {
+      const params = new URLSearchParams(searchParams.toString())
+      if (debouncedSearch) {
+        params.set('search', debouncedSearch)
+      } else {
+        params.delete('search')
+      }
+      router.push(`/products?${params.toString()}`)
     }
-    router.push(`/products?${params.toString()}`)
-  }, [debouncedSearch, router, searchParams])
+  }, [debouncedSearch, router, searchParams, pathname])
 
   return (
     <div>

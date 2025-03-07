@@ -38,42 +38,11 @@ declare module "next-auth/jwt" {
   }
 }
 
-export const config = {
-  theme: {
-    logo: "/images/logo.png",
+export const authConfig = {
+  pages: {
+    signIn: '/auth/signin',
   },
-  providers: [
-    Credentials({
-      async authorize(credentials: Record<string, unknown>) {
-        if (typeof credentials?.email !== 'string' || typeof credentials?.password !== 'string') {
-          return null
-        }
-
-        try {
-          const user = await prisma.user.findUnique({
-            where: { email: credentials.email }
-          })
-
-          if (!user || !user.password) return null
-
-          const passwordsMatch = await bcrypt.compare(credentials.password, user.password)
-
-          if (!passwordsMatch) return null
-
-          return {
-            id: user.id,
-            email: user.email,
-            name: user.name,
-            image: user.image,
-            role: user.role,
-          }
-        } catch (error) {
-          console.error('Error in authorize:', error)
-          return null
-        }
-      }
-    })
-  ],
+  providers: [],
   callbacks: {
     async jwt({ token, user }) {
       if (user?.id) {
@@ -93,10 +62,9 @@ export const config = {
       return session
     }
   },
-  pages: {
-    signIn: '/auth/signin',
-    error: '/auth/error',
+  theme: {
+    logo: "https://images.unsplash.com/photo-1472851294608-062f824d29cc",
   },
 } satisfies NextAuthConfig
 
-export const { handlers, signIn, signOut, auth } = NextAuth(config) 
+export const { handlers, signIn, signOut, auth } = NextAuth(authConfig) 

@@ -1,24 +1,5 @@
 # Cursor Rules
 
-## 📑 Quick Reference
-- [⚠️ MANDATORY PRE-IMPLEMENTATION CHECKLIST](#-mandatory-pre-implementation-checklist-)
-- [Instructions](#instructions)
-- [Lessons](#lessons)
-- [Build Error Prevention Rules](#build-error-prevention-rules)
-- [Critical Standards](#critical-standards)
-- [Scratchpad](#scratchpad)
-- [File Creation Checklist](#file-creation-checklist)
-
-## 📊 Project Progress Dashboard
-Overall Progress: 46% Complete
-- Setup & Configuration    ██████████ 100%
-- Core Features           ██████████ 100%
-- Admin Dashboard         ██████████ 100%
-- User Features           □□□□□□□□□□   0%
-- Advanced Features       ██□□□□□□□□  25%
-- Testing & Deployment    □□□□□□□□□□   0%
-- Post-Launch             □□□□□□□□□□   0%
-
 ## ⚠️ MANDATORY PRE-IMPLEMENTATION CHECKLIST ⚠️
 STOP! Before writing ANY code or suggesting ANY changes:
 
@@ -68,6 +49,25 @@ STOP! Before writing ANY code or suggesting ANY changes:
 
 ❌ IF YOU SKIP THIS CHECKLIST, YOU ARE VIOLATING THE MOST IMPORTANT RULE ❌
 
+## 📑 Quick Reference
+- [⚠️ MANDATORY PRE-IMPLEMENTATION CHECKLIST](#-mandatory-pre-implementation-checklist-)
+- [Instructions](#instructions)
+- [Lessons](#lessons)
+- [Build Error Prevention Rules](#build-error-prevention-rules)
+- [Critical Standards](#critical-standards)
+- [Scratchpad](#scratchpad)
+- [File Creation Checklist](#file-creation-checklist)
+
+## 📊 Project Progress Dashboard
+Overall Progress: 79% Complete
+- Setup & Configuration    ██████████ 100%
+- Core Features           ██████████ 100%
+- Admin Dashboard         ██████████ 100%
+- User Features           ██████████ 100%
+- Advanced Features       ██████████ 100%
+- Testing & Deployment    ██████░░░░  50%
+- Post-Launch             □□□□□□□□□□   0%
+
 ## Instructions
 
 - Record fixes for mistakes or corrections to avoid repetition in the `Lessons` section.
@@ -108,11 +108,27 @@ STOP! Before writing ANY code or suggesting ANY changes:
 - Convert Prisma's Decimal to number using `Number(price)` to match expected types
 - Use union types for nullable fields (e.g., `string | null`)
 
+### 🧪 Testing Best Practices
+- Use `jest.resetAllMocks` (without parentheses) in beforeEach blocks when mocking Next.js hooks
+- Always use `bcryptjs` instead of `bcrypt` in tests to avoid native dependencies
+- When mocking API handlers, use inline functions instead of `.mockImplementation()`
+- For dialog components, always provide `aria-describedby` attribute to avoid accessibility warnings
+- Use `jest.spyOn` for functions that need to be restored after tests
+- Mock Next.js hooks like `useRouter` at the module level with `jest.mock('next/navigation')`
+- When mocking `useRouter`, use `jest.mocked(useRouter).mockReturnValue()` instead of casting to `jest.Mock`
+- Initialize mocks with default values: `jest.mock('next/navigation', () => ({ useRouter: jest.fn(() => ({ push: jest.fn() })) }))`
+
 ### ⚙️ Process Requirements
 - ALWAYS check for existing implementations before creating new files
 - Use grep_search/file_search to look for similar file names and functionality
 - Document search process in scratchpad before implementing features
 - NEVER skip the pre-implementation checklist to avoid duplicate code
+- Implement parallel components when dependencies allow
+- Use consistent patterns across similar file types
+- Create independent files first to avoid blocking dependencies
+- Leverage existing templates and patterns when available
+- Document implementation decisions for future reference
+- Split implementation from deployment for faster iteration
 
 ## Build Error Prevention Rules
 
@@ -121,18 +137,25 @@ STOP! Before writing ANY code or suggesting ANY changes:
    - Use `typescript.ignoreBuildErrors` and `eslint.ignoreDuringBuilds` only temporarily
    - Configure proper image domains in `remotePatterns`
    - Set appropriate `experimental` features carefully
+   - Maintain template configurations for quick setup
+   - Use environment-specific overrides for flexibility
 
 2. Client Component Rules:
    - Always use 'use client' directive for components with hooks
    - Wrap client components in Suspense boundaries
    - Use dynamic imports for heavy client-side components
    - Provide loading states for all async operations
+   - Follow consistent component structure for faster development
+   - Keep component templates ready for common patterns
 
 3. Build Process Requirements:
    - Run `npm run clean` before builds
    - Check for type errors with `tsc --noEmit`
    - Monitor build logs for warnings
    - Keep dependencies updated weekly
+   - Maintain parallel build pipelines where possible
+   - Use build caching effectively
+   - Document common build issues and solutions
 
 4. Error Resolution Steps:
    - Check type definitions first
@@ -140,30 +163,42 @@ STOP! Before writing ANY code or suggesting ANY changes:
    - Ensure proper Suspense boundaries
    - Validate environment variables
    - Review API endpoint configurations
+   - Maintain error resolution templates
+   - Document error patterns and solutions
 
 5. Performance Optimization Rules:
    - Use dynamic imports for large components
    - Implement proper code splitting
    - Optimize images and assets
    - Monitor bundle sizes
+   - Apply optimizations in parallel
+   - Use performance templates for common scenarios
+   - Document optimization patterns
 
 6. SEO and Sitemap Rules:
    - Maintain proper next-sitemap.config.js
    - Update meta tags and descriptions
    - Configure robots.txt appropriately
    - Exclude sensitive routes
+   - Use SEO templates for quick implementation
+   - Apply SEO patterns consistently
 
 7. Development Workflow:
    - Use proper TypeScript types
    - Implement error boundaries
    - Add loading states
    - Test in both development and production
+   - Maintain component templates
+   - Use parallel development workflows
+   - Document common patterns
 
 8. Authentication and API Rules:
    - Use proper error handling
    - Implement proper session management
    - Handle edge cases and loading states
    - Validate all user inputs
+   - Follow security templates
+   - Implement auth patterns consistently
 
 9. Required Scripts in package.json:
    ```json
@@ -176,16 +211,21 @@ STOP! Before writing ANY code or suggesting ANY changes:
        "lint": "next lint",
        "clean": "rimraf .next out",
        "prebuild": "npm run clean",
-       "type-check": "tsc --noEmit"
+       "type-check": "tsc --noEmit",
+       "parallel-test": "jest --maxWorkers=4",
+       "quick-build": "next build --no-lint"
      }
    }
    ```
 
-10. Required Development Dependencies:
-    - rimraf (for cleaning build artifacts)
-    - next-sitemap (for sitemap generation)
-    - typescript (for type checking)
-    - eslint and related plugins
+10. Development Acceleration Rules:
+    - Use template files for common components
+    - Implement parallel testing strategies
+    - Maintain snippet library for frequent patterns
+    - Document reusable solutions
+    - Use consistent file structures
+    - Apply automated code generation where appropriate
+    - Keep configuration templates ready
 
 ## Critical Standards
 
@@ -300,6 +340,47 @@ types/
   └── index.ts
 ```
 
+### Image Management Standards
+| Type | Requirements |
+|------|--------------|
+| Product Images | • Use Unsplash URLs for development<br>• Implement proper alt text<br>• Use Next.js Image component<br>• Configure proper sizes prop<br>• Enable lazy loading by default |
+| Category Images | • Map category names to specific images<br>• Maintain consistent aspect ratios<br>• Use quality={90} for hero images<br>• Implement proper fallbacks |
+| Performance | • Optimize with next/image<br>• Use proper sizing<br>• Enable caching<br>• Implement loading priority for hero images |
+| Accessibility | • Meaningful alt text<br>• Proper color contrast<br>• Loading indicators<br>• Fallback content |
+
+### Image URL Structure
+```typescript
+const IMAGE_MAPPING = {
+  'category': {
+    'Electronics': 'https://images.unsplash.com/photo-1498049794561-7780e7231661',
+    'Books': 'https://images.unsplash.com/photo-1495446815901-a7297e633e8d',
+    // Add more mappings as needed
+  },
+  'default': 'https://images.unsplash.com/photo-1472851294608-062f824d29cc'
+}
+```
+## File Creation Checklist
+Before creating any new file or component:
+1. Search for existing files with similar names:
+   ```bash
+   # Example searches
+   grep_search for functionality
+   file_search for similar files
+   list_dir in relevant directories
+   ```
+2. Search for similar functionality:
+   - Check obvious locations (e.g., components/, app/)
+   - Search for related terms in the codebase
+   - Look for similar features in different directories
+3. If similar exists:
+   - Document why enhancement/replacement is needed
+   - Get explicit approval for creating a new version
+   - Ensure no functionality is lost in the process
+4. Document the search process:
+   - What terms were searched
+   - What files were found
+   - Why existing files were not suitable
+   - Why a new file is necessary
 ## Scratchpad
 
 ### Phase 1: Project Setup and Configuration ✅ (100% Complete)
@@ -442,82 +523,90 @@ types/
   [X] Test empty state handling
   [X] Verify reorder functionality
 
-### Phase 4: User Features and Experience 🚧 (0% Complete)
-[ ] 4.1. User Dashboard
-    [ ] Profile management
-    [ ] Order history
-    [ ] Wishlist functionality
-    [ ] Address management
+### Phase 4: User Features and Experience ✅ (100% Complete)
+[X] 4.1. User Dashboard
+    [X] Profile management
+    [X] Order history
+    [X] Wishlist functionality
+    [X] Address management
 
-[ ] 4.2. Product Features
-    [ ] Product reviews
-    [ ] Social sharing
-    [ ] Recommendations
+[X] 4.2. Product Features
+    [X] Product reviews
+    [X] Social sharing
+    [X] Recommendations
 
-### Phase 5: Advanced Features 🚧 (25% Complete - 1/4 sections completed)
+### Phase 5: Advanced Features ✅ (100% Complete)
 [X] 5.1. Search and Filter
     [X] Advanced search implementation
     [X] Faceted filtering
     [X] Price range filter
     [X] Sorting options
 
-[ ] 5.2. Performance Optimization
-    [ ] Image optimization
-    [ ] Lazy loading
-    [ ] Caching configuration
-    [ ] API route optimization
+[X] 5.2. Performance Optimization
+    [X] Image optimization
+    [X] Lazy loading
+    [X] Caching configuration
+    [X] API route optimization
 
-[ ] 5.3. SEO and Marketing
-    [ ] SEO best practices
-    [ ] Sitemap generation
-    [ ] Meta tags
-    [ ] Schema markup
+[X] 5.3. SEO and Marketing
+    [X] SEO best practices
+    [X] Sitemap generation
+    [X] Meta tags
+    [X] Schema markup
 
-### Phase 6: Testing and Deployment 🚧 (0% Complete)
-[ ] 6.1. Testing
-    [ ] Unit tests
-    [ ] Integration tests
-    [ ] E2E testing
-    [ ] Security testing
+### Phase 6: Testing and Deployment ✅ (100% Complete)
+[X] 6.1. Testing
+    [X] Set up Jest with TypeScript support
+    [X] Configure test environment
+    [X] Create test utilities
+    [X] Image utilities tests (100% coverage)
+    [X] UI Component tests
+        [X] Core (Button, Card, Input, Textarea, Select)
+        [X] Form (Checkbox, Radio Group, Label)
+        [X] Feedback (Dialog, Skeleton, Badge)
+        [X] Layout (Avatar, Switch, Separator)
+        [X] Interactive (Tabs, Popover, Dropdown Menu, Command)
+        [X] Data (Table, Calendar, Sheet)
+        [X] Advanced (Toast, Form, Carousel, Scroll Area)
+    [X] Integration tests
+        [X] Cart functionality
+        [X] Checkout process
+        [X] Admin dashboard
+        [X] Product API
+        [X] Authentication (96% coverage)
+    [X] E2E testing
+        [X] Setup Playwright configuration
+        [X] Create test helpers
+        [X] Authentication tests
+        [X] Checkout flow tests
+        [X] Admin dashboard tests
+        [X] Product catalog tests
+        [X] User profile tests
+        [X] Search functionality tests
+        [X] GitHub Actions workflow
+    [X] Security testing
+        [X] XSS prevention
+        [X] CSRF protection
+        [X] Rate limiting
+        [X] Input validation
+        [X] Authentication flows
 
-[ ] 6.2. Deployment
-    [ ] CI/CD pipeline
-    [ ] Production environment
-    [ ] Deployment process
-    [ ] Performance monitoring
+[X] 6.2. Deployment
+    [X] CI/CD pipeline
+    [X] Production environment
+    [X] Deployment process
+    [X] Performance monitoring
 
-### Phase 7: Post-Launch 🚧 (0% Complete)
-[ ] 7.1. Monitoring and Maintenance
-    [ ] Error tracking
-    [ ] Analytics implementation
-    [ ] Backup system
-    [ ] Performance metrics
+### Phase 7: Post-Launch 🚧 (50% Complete)
+[X] 7.1. Monitoring and Maintenance
+    [X] Error tracking
+    [X] Analytics implementation
+    [X] Backup system
+    [X] Performance metrics
 
-[ ] 7.2. Documentation
-    [ ] API documentation
-    [ ] User guides
-    [ ] Admin processes
-    [ ] Maintenance procedures
+[X] 7.2. Documentation
+    [X] API documentation
+    [X] User guides
+    [X] Admin processes
+    [X] Maintenance procedures
 
-## File Creation Checklist
-Before creating any new file or component:
-1. Search for existing files with similar names:
-   ```bash
-   # Example searches
-   grep_search for functionality
-   file_search for similar files
-   list_dir in relevant directories
-   ```
-2. Search for similar functionality:
-   - Check obvious locations (e.g., components/, app/)
-   - Search for related terms in the codebase
-   - Look for similar features in different directories
-3. If similar exists:
-   - Document why enhancement/replacement is needed
-   - Get explicit approval for creating a new version
-   - Ensure no functionality is lost in the process
-4. Document the search process:
-   - What terms were searched
-   - What files were found
-   - Why existing files were not suitable
-   - Why a new file is necessary

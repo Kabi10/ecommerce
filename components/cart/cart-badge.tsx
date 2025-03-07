@@ -1,11 +1,18 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import { useCart } from '@/lib/store/cart'
 
 export function CartBadge() {
   const cart = useCart()
+  const [mounted, setMounted] = useState(false)
   const totalItems = cart.getTotalItems()
 
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (!mounted) return null
   if (totalItems === 0) return null
 
   return (

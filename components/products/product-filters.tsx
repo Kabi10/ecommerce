@@ -35,9 +35,10 @@ interface Category {
 
 interface ProductFiltersProps {
   categories: Category[]
+  basePath?: string
 }
 
-export function ProductFilters({ categories }: ProductFiltersProps) {
+export function ProductFilters({ categories, basePath = "/products" }: ProductFiltersProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
   
@@ -67,7 +68,7 @@ export function ProductFilters({ categories }: ProductFiltersProps) {
       }
     })
     
-    router.push(`/admin/products?${params.toString()}`)
+    router.push(`${basePath}?${params.toString()}`)
   }
 
   // Handle search input change
@@ -94,7 +95,7 @@ export function ProductFilters({ categories }: ProductFiltersProps) {
     setSearch("")
     setCategory("")
     setStock("")
-    router.push("/admin/products")
+    router.push(basePath)
   }
 
   // Sync state with URL params on mount
@@ -195,7 +196,7 @@ export function ProductFilters({ categories }: ProductFiltersProps) {
             <SelectValue placeholder="Stock status" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">All stock levels</SelectItem>
+            <SelectItem value="all">All stock levels</SelectItem>
             <SelectItem value="in-stock">In stock</SelectItem>
             <SelectItem value="low-stock">Low stock (≤ 10)</SelectItem>
             <SelectItem value="out-of-stock">Out of stock</SelectItem>

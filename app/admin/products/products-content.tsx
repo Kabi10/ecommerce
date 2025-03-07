@@ -334,14 +334,10 @@ export function ProductsContent() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-start">
-        <ProductFilters categories={categories} />
-        <Button onClick={() => {
-          setCurrentProduct(null)
-          setIsAddDialogOpen(true)
-          setActiveTab("general")
-        }}>
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <ProductFilters categories={categories} basePath="/admin/products" />
+        <Button onClick={() => setIsAddDialogOpen(true)}>
           <Plus className="mr-2 h-4 w-4" />
           Add Product
         </Button>

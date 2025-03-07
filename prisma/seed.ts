@@ -3,6 +3,14 @@ import { hash } from 'bcryptjs';
 
 const prisma = new PrismaClient();
 
+// Add image constants
+const PRODUCT_IMAGES = {
+  electronics: 'https://images.unsplash.com/photo-1498049794561-7780e7231661',
+  industrial: 'https://images.unsplash.com/photo-1581092580497-e0d23cbdf1dc',
+  books: 'https://images.unsplash.com/photo-1495446815901-a7297e633e8d',
+  default: 'https://images.unsplash.com/photo-1472851294608-062f824d29cc'
+}
+
 async function main() {
   try {
     // Create admin user
@@ -35,28 +43,28 @@ async function main() {
         data: {
           name: 'Industrial & Electrical Equipment',
           description: 'High-quality industrial and electrical equipment for professional use',
-          image: '/images/EATON FAZ-D3.webp',
+          image: PRODUCT_IMAGES.industrial,
         },
       }),
       prisma.category.create({
         data: {
           name: 'Books & Literature',
           description: 'Wide selection of books across various genres',
-          image: '/images/Emerson.webp',
+          image: PRODUCT_IMAGES.books,
         },
       }),
       prisma.category.create({
         data: {
           name: 'Textbooks & Educational',
           description: 'Educational materials and textbooks for all levels',
-          image: '/images/HMIS85 5in7 Small.webp',
+          image: PRODUCT_IMAGES.books,
         },
       }),
       prisma.category.create({
         data: {
           name: 'Coins & Collectibles',
           description: 'Rare coins and valuable collectibles',
-          image: '/images/Emerson.webp',  // You can update this later
+          image: PRODUCT_IMAGES.default,
         },
       }),
     ]);
@@ -69,7 +77,7 @@ async function main() {
           name: 'EATON Circuit Breaker',
           description: 'Professional-grade circuit breaker for industrial applications',
           price: 299.99,
-          images: ['/images/EATON FAZ-D3.webp'],
+          images: [PRODUCT_IMAGES.industrial],
           stock: 50,
           sku: 'IND-CB-001',
           categoryId: categories[0].id,
@@ -83,7 +91,7 @@ async function main() {
           name: 'Emerson Control System',
           description: 'Advanced control system for industrial automation',
           price: 1299.99,
-          images: ['/images/Emerson.webp'],
+          images: [PRODUCT_IMAGES.industrial],
           stock: 25,
           sku: 'IND-CS-002',
           categoryId: categories[0].id,
@@ -99,7 +107,7 @@ async function main() {
           name: 'The Art of Programming',
           description: 'Comprehensive guide to modern programming practices',
           price: 49.99,
-          images: ['/images/HMIS85 5in7 Small.webp'],
+          images: [PRODUCT_IMAGES.books],
           stock: 100,
           sku: 'BOOK-PROG-001',
           categoryId: categories[1].id,
@@ -115,7 +123,7 @@ async function main() {
           name: 'Advanced Mathematics Textbook',
           description: 'University-level mathematics textbook',
           price: 79.99,
-          images: ['/images/HMIS85 5in7 Small.webp'],
+          images: [PRODUCT_IMAGES.books],
           stock: 75,
           sku: 'EDU-MATH-001',
           categoryId: categories[2].id,
@@ -131,7 +139,7 @@ async function main() {
           name: 'Rare Silver Dollar 1921',
           description: 'Authentic 1921 Silver Dollar in excellent condition',
           price: 599.99,
-          images: ['/images/Emerson.webp'],  // You can update this later
+          images: [PRODUCT_IMAGES.default],
           stock: 5,
           sku: 'COIN-SD-001',
           categoryId: categories[3].id,

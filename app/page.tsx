@@ -38,6 +38,20 @@ async function getFeaturedProducts() {
   }
 }
 
+// Add a helper function for category images
+function getCategoryImage(categoryName: string) {
+  const images = {
+    'Electronics': 'https://images.unsplash.com/photo-1555066931-4365d14bab8c',
+    'Books & Literature': 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c',
+    'Textbooks & Educational': 'https://images.unsplash.com/photo-1532012197267-da84d127e765',
+    'Coins & Collectibles': 'https://images.unsplash.com/photo-1610375461246-d7e0fb438f70',
+    'Industrial & Electrical Equipment': 'https://images.unsplash.com/photo-1581091226825-a6a2a5aaa9df',
+    // Default image if category doesn't match
+    'default': 'https://images.unsplash.com/photo-1472851294608-062f824d29cc'
+  }
+  return images[categoryName as keyof typeof images] || images.default
+}
+
 export default async function Home() {
   const [categories, featuredProducts] = await Promise.all([
     getCategories(),
@@ -50,7 +64,7 @@ export default async function Home() {
       <section className="relative h-[600px] w-full">
         <div className="relative h-full w-full">
           <Image
-            src="/images/hero.webp"
+            src="https://images.unsplash.com/photo-1441986300917-64674bd600d8"
             alt="Hero image"
             fill
             priority
@@ -82,7 +96,7 @@ export default async function Home() {
                 <CardHeader className="p-0">
                   <div className="relative aspect-video">
                     <Image
-                      src={`/images/${category.name.toLowerCase().replace(/\s+/g, '-')}.webp`}
+                      src={getCategoryImage(category.name)}
                       alt={category.name}
                       fill
                       sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
@@ -118,7 +132,7 @@ export default async function Home() {
                 <CardHeader className="p-0">
                   <div className="relative aspect-square">
                     <Image
-                      src={product.images[0]}
+                      src={product.images[0] || "https://images.unsplash.com/photo-1472851294608-062f824d29cc"}
                       alt={product.name}
                       fill
                       sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"

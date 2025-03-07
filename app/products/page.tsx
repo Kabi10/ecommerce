@@ -9,6 +9,11 @@ import { Prisma } from '@prisma/client'
 export const metadata: Metadata = {
   title: 'Products | EStore',
   description: 'Browse all products in our store',
+  openGraph: {
+    title: 'Products | EStore',
+    description: 'Browse all products in our store',
+    type: 'website',
+  }
 }
 
 type SearchParams = {
@@ -88,25 +93,19 @@ async function getProducts(searchParams: SearchParams) {
 }
 
 async function getMinMaxPrices() {
-  const [minPrice, maxPrice] = await Promise.all([
-    prisma.product.findFirst({
-      orderBy: { price: 'asc' },
-      select: { price: true },
-    }),
-    prisma.product.findFirst({
-      orderBy: { price: 'desc' },
-      select: { price: true },
-    }),
-  ])
+  const result = await prisma.product.aggregate({
+    _min: { price: true },
+    _max: { price: true },
+  })
 
   return {
-    minPrice: Number(minPrice?.price || 0),
-    maxPrice: Number(maxPrice?.price || 1000),
+    minPrice: Number(result._min.price) || 0,
+    maxPrice: Number(result._max.price) || 1000,
   }
 }
 
 async function getCategories() {
-  return await prisma.category.findMany()
+  return prisma.category.findMany()
 }
 
 export default async function ProductsPage({ params, searchParams }: PageProps) {
@@ -116,26 +115,53 @@ export default async function ProductsPage({ params, searchParams }: PageProps) 
   const { minPrice, maxPrice } = await getMinMaxPrices()
   const categories = await getCategories()
 
+  const collectionSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: 'Products | EStore',
+    description: 'Browse all products in our store',
+    url: `${process.env.SITE_URL}/products`,
+    numberOfItems: pagination.total,
+    hasPart: products.map(product => ({
+      '@type': 'Product',
+      name: product.name,
+      description: product.description,
+      image: product.images[0],
+      offers: {
+        '@type': 'Offer',
+        price: product.price,
+        priceCurrency: 'USD',
+        availability: product.stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock'
+      }
+    }))
+  }
+
   return (
-    <div className="container py-8 md:py-10">
-      <div className="flex flex-col md:flex-row gap-8">
-        <aside className="w-full md:w-64 flex-none">
-          <div className="sticky top-4 space-y-6">
-            <ProductSearch className="mb-6" />
-            <ProductFilters
-              minPrice={minPrice}
-              maxPrice={maxPrice}
-              categories={categories}
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionSchema) }}
+      />
+      <div className="container py-8 md:py-10">
+        <div className="flex flex-col md:flex-row gap-8">
+          <aside className="w-full md:w-64 flex-none">
+            <div className="sticky top-4 space-y-6">
+              <ProductSearch className="mb-6" />
+              <ProductFilters
+                minPrice={minPrice}
+                maxPrice={maxPrice}
+                categories={categories}
+              />
+            </div>
+          </aside>
+          <main className="flex-1">
+            <ProductGrid
+              products={products}
+              pagination={pagination}
             />
-          </div>
-        </aside>
-        <main className="flex-1">
-          <ProductGrid
-            products={products}
-            pagination={pagination}
-          />
-        </main>
+          </main>
+        </div>
       </div>
-    </div>
+    </>
   )
 } 

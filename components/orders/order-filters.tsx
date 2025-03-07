@@ -139,7 +139,7 @@ export function OrderFilters({ onReset }: OrderFiltersProps) {
               <SelectValue placeholder="Order Status" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Statuses</SelectItem>
+              <SelectItem value="all">All Statuses</SelectItem>
               <SelectItem value="pending">Pending</SelectItem>
               <SelectItem value="processing">Processing</SelectItem>
               <SelectItem value="shipped">Shipped</SelectItem>
@@ -156,7 +156,7 @@ export function OrderFilters({ onReset }: OrderFiltersProps) {
               <SelectValue placeholder="Payment Status" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Payments</SelectItem>
+              <SelectItem value="all">All Payments</SelectItem>
               <SelectItem value="pending">Pending</SelectItem>
               <SelectItem value="paid">Paid</SelectItem>
               <SelectItem value="failed">Failed</SelectItem>
