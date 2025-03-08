@@ -1,15 +1,7 @@
 import { NextResponse } from 'next/server'
 import { auth } from '@/auth'
 import { prisma } from '@/lib/prisma'
-import Stripe from 'stripe'
-
-if (!process.env.STRIPE_SECRET_KEY) {
-  throw new Error('STRIPE_SECRET_KEY is not set')
-}
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: '2025-02-24.acacia',
-})
+import { stripe } from '@/lib/stripe'
 
 export async function POST(req: Request) {
   try {

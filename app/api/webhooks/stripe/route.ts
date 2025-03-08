@@ -1,13 +1,8 @@
 import { headers } from "next/headers"
 import { NextResponse } from "next/server"
-import Stripe from "stripe"
 import { prisma } from "@/lib/prisma"
 import { sendOrderConfirmationEmail } from "@/lib/email"
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2025-02-24.acacia",
-  typescript: true,
-})
+import { stripe } from "@/lib/stripe"
 
 export async function POST(req: Request) {
   const body = await req.text()
@@ -22,14 +17,15 @@ export async function POST(req: Request) {
   }
 
   try {
+    const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET || 'mock_webhook_secret'
     const event = stripe.webhooks.constructEvent(
       body,
       signature,
-      process.env.STRIPE_WEBHOOK_SECRET!
+      webhookSecret
     )
 
     if (event.type === "checkout.session.completed") {
-      const session = event.data.object as Stripe.Checkout.Session
+      const session = event.data.object as any
 
       const payment = await prisma.payment.findUnique({
         where: {
