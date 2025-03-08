@@ -37,18 +37,16 @@ function SearchInput({ className, placeholder = 'Search products...' }: ProductS
   }, [debouncedSearch, router, searchParams, pathname])
 
   return (
-    <div>
-      <h3 className="text-sm font-medium mb-2">Search</h3>
-      <div className={`relative ${className}`}>
-        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-        <Input
-          type="search"
-          placeholder={placeholder}
-          className="pl-8 w-full"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
-      </div>
+    <div className={`relative ${className}`}>
+      <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+      <Input
+        type="search"
+        placeholder={placeholder}
+        className="pl-8 w-full"
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        aria-label="Search products"
+      />
     </div>
   )
 }
@@ -56,17 +54,15 @@ function SearchInput({ className, placeholder = 'Search products...' }: ProductS
 export function ProductSearch(props: ProductSearchProps) {
   return (
     <Suspense fallback={
-      <div>
-        <h3 className="text-sm font-medium mb-2">Search</h3>
-        <div className={`relative ${props.className}`}>
-          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input
-            type="search"
-            placeholder={props.placeholder}
-            className="pl-8 w-full"
-            disabled
-          />
-        </div>
+      <div className={`relative ${props.className}`}>
+        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+        <Input
+          type="search"
+          placeholder={props.placeholder}
+          className="pl-8 w-full"
+          disabled
+          aria-label="Search products"
+        />
       </div>
     }>
       <SearchInput {...props} />

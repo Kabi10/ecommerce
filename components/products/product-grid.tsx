@@ -54,21 +54,22 @@ export function ProductGrid({ products, pagination }: ProductGridProps) {
 
   return (
     <div className="space-y-8">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {products.map((product) => {
           const image = getProductImage(product.name)
           const averageRating = getAverageRating(product.reviews)
 
           return (
-            <Card key={product.id} className="flex flex-col h-full">
-              <Link href={`/products/${product.id}`} className="relative block">
-                <div className="aspect-[4/3] overflow-hidden">
+            <Card key={product.id} className="flex flex-col h-full overflow-hidden">
+              <Link href={`/products/${product.id}`} className="block">
+                <div className="aspect-square w-full overflow-hidden">
                   <Image
                     src={image.src}
                     alt={image.alt}
-                    width={image.width}
-                    height={image.height}
+                    width={400}
+                    height={400}
                     className="object-cover w-full h-full transition-transform hover:scale-105"
+                    loading="lazy"
                   />
                 </div>
               </Link>
@@ -80,16 +81,17 @@ export function ProductGrid({ products, pagination }: ProductGridProps) {
                   <Link
                     href={`/products/${product.id}`}
                     className="block font-medium hover:text-primary line-clamp-1 mb-1"
+                    prefetch={false}
                   >
                     {product.name}
                   </Link>
                   {product.description && (
-                    <p className="text-sm text-muted-foreground line-clamp-2 min-h-[2.5rem]">
+                    <p className="text-sm text-muted-foreground line-clamp-2 h-10 mb-2">
                       {product.description}
                     </p>
                   )}
                 </div>
-                <div className="mt-4 space-y-3">
+                <div className="mt-auto space-y-3">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-1.5">
                       <div className="flex">
