@@ -1,4 +1,48 @@
-# EStore - Your One-Stop Shop
+# EStore - Modern E-Commerce Platform
+
+![Project Progress](https://progress-bar.dev/79/?title=Progress)
+
+## 📊 Project Status
+- Setup & Configuration    ✅ 100%
+- Core Features           ✅ 100%
+- Admin Dashboard         ✅ 100%
+- User Features           ✅ 100%
+- Advanced Features       ✅ 100%
+- Testing & Deployment    🔄 50%
+- Post-Launch             🚧 0%
+
+## 🌟 Features
+
+### 🛍️ Core Features
+- **Products Catalog**: Comprehensive product listings with filters and search
+- **Product Details**: Image gallery, specifications, and related products
+- **Shopping Cart**: Add/remove functionality, quantity management, and persistent cart
+- **User Authentication**: Sign up/login flows, password reset, and OAuth providers
+- **Checkout Process**: Multi-step checkout with address and payment management
+
+### 👑 Admin Dashboard
+- **Metrics Section**: Key performance indicators with change tracking
+- **Analytics**: Revenue & orders charts, order status distribution
+- **Management**: Top products overview, low stock alerts, recent orders table
+- **Admin Authentication**: Role-based access control for admin features
+
+### 👤 User Features
+- **User Dashboard**: Profile management and personalization
+- **Order History**: Track and manage past orders
+- **Wishlist**: Save products for later
+- **Address Management**: Multiple shipping addresses
+
+### 🔍 Advanced Features
+- **Advanced Search**: Faceted filtering and comprehensive search options
+- **Performance Optimization**: Image optimization, lazy loading, and caching
+- **SEO**: Best practices, sitemap generation, meta tags, and schema markup
+
+### 🧪 Testing
+- **Unit Tests**: Jest with TypeScript support
+- **Component Tests**: UI component testing
+- **Integration Tests**: Cart, checkout, admin dashboard, and API testing
+- **E2E Tests**: Playwright for end-to-end testing
+- **Security Testing**: XSS prevention, CSRF protection, and input validation
 
 ## Image Requirements
 
@@ -38,6 +82,15 @@ npm run build
 
 # Start production server
 npm run start
+
+# Run tests
+npm test
+
+# Run E2E tests
+npm run test:e2e
+
+# Type checking
+npm run type-check
 ```
 
 ## Environment Variables
@@ -45,10 +98,37 @@ npm run start
 Create a `.env.local` file with the following variables:
 
 ```env
+# Database
 DATABASE_URL="postgresql://user:password@localhost:5432/estore"
+
+# Authentication
 NEXTAUTH_URL="http://localhost:3000"
 NEXTAUTH_SECRET="your-secret-key"
+
+# Email (Resend)
+RESEND_API_KEY="your-resend-api-key"
+
+# File Upload (Uploadthing)
+UPLOADTHING_SECRET="your-uploadthing-secret"
+UPLOADTHING_APP_ID="your-uploadthing-app-id"
+
+# Payment Processing
+STRIPE_SECRET_KEY="your-stripe-secret-key"
+STRIPE_WEBHOOK_SECRET="your-stripe-webhook-secret"
 ```
+
+## Tech Stack
+
+- **Frontend**: Next.js 15, React, TypeScript, Tailwind CSS, Shadcn UI
+- **State Management**: Zustand
+- **Forms & Validation**: React Hook Form, Zod
+- **Authentication**: NextAuth.js
+- **Database**: PostgreSQL, Prisma ORM
+- **File Upload**: Uploadthing
+- **Email**: Resend
+- **Testing**: Jest, React Testing Library, Playwright
+- **Analytics**: Recharts
+- **Deployment**: Vercel
 
 ## License
 
