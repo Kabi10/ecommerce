@@ -1,10 +1,22 @@
 import { Resend } from 'resend'
 
-if (!process.env.RESEND_API_KEY) {
-  throw new Error('RESEND_API_KEY is not set')
+// Create a mock implementation for environments without RESEND_API_KEY
+const createMockEmailClient = () => {
+  console.warn('RESEND_API_KEY is not set, using mock email client')
+  return {
+    emails: {
+      send: async (options: any) => {
+        console.log('Mock email sent:', options)
+        return { id: 'mock-email-id', message: 'Mock email sent' }
+      }
+    }
+  }
 }
 
-export const resend = new Resend(process.env.RESEND_API_KEY)
+// Use the real Resend client if API key is available, otherwise use mock
+export const resend = process.env.RESEND_API_KEY 
+  ? new Resend(process.env.RESEND_API_KEY)
+  : createMockEmailClient() as Resend
 
 export const FROM_EMAIL = 'orders@estore.com'
 
