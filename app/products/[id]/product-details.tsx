@@ -1,6 +1,5 @@
 'use client'
 
-import Image from 'next/image'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -11,6 +10,7 @@ import { formatPrice } from '@/lib/utils'
 import { Product } from '@/app/types'
 import { useRouter } from 'next/navigation'
 import { useState, useEffect } from 'react'
+import { ProductImage } from '@/components/ui/product-image'
 
 interface ProductDetailsProps {
   product: Product
@@ -32,7 +32,7 @@ export default function ProductDetails({ product, relatedProducts }: ProductDeta
       id: product.id,
       name: product.name,
       price: product.price,
-      image: product.image,
+      image: `/api/images/search?query=${encodeURIComponent(product.name)}`,
     })
   }
 
@@ -45,13 +45,10 @@ export default function ProductDetails({ product, relatedProducts }: ProductDeta
       <div className="grid gap-8 md:grid-cols-2">
         {/* Product Image */}
         <div className="relative aspect-square overflow-hidden rounded-lg">
-          <Image
-            src={product.image}
-            alt={product.name}
-            fill
-            className="object-cover"
-            priority
-            sizes="(max-width: 768px) 100vw, 50vw"
+          <ProductImage
+            productName={product.name}
+            priority={true}
+            className="w-full h-full"
           />
         </div>
 
@@ -153,12 +150,9 @@ export default function ProductDetails({ product, relatedProducts }: ProductDeta
                   className="group overflow-hidden h-full"
                 >
                   <div className="relative aspect-square">
-                    <Image
-                      src={relatedProduct.image}
-                      alt={relatedProduct.name}
-                      fill
-                      className="object-cover transition-transform duration-300 group-hover:scale-105"
-                      sizes="(max-width: 768px) 100vw, 25vw"
+                    <ProductImage
+                      productName={relatedProduct.name}
+                      className="w-full h-full transition-transform duration-300 group-hover:scale-105"
                     />
                   </div>
                   <div className="p-4">

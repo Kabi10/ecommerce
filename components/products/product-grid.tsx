@@ -3,11 +3,10 @@
 import Link from 'next/link'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Image } from '@/components/ui/image'
-import { getProductImage } from '@/lib/image-utils'
 import { formatPrice } from '@/lib/utils'
 import { Star } from 'lucide-react'
 import { useCart } from '@/lib/store/cart'
+import { ProductImage } from '@/components/ui/product-image'
 
 interface Product {
   id: string
@@ -37,12 +36,11 @@ export function ProductGrid({ products, pagination }: ProductGridProps) {
   const cart = useCart()
 
   const handleAddToCart = (product: Product) => {
-    const image = getProductImage(product.name)
     cart.addItem({
       id: product.id,
       name: product.name,
       price: Number(product.price),
-      image: image.src,
+      image: `/api/images/search?query=${encodeURIComponent(product.name)}`,
     })
   }
 
@@ -56,20 +54,17 @@ export function ProductGrid({ products, pagination }: ProductGridProps) {
     <div className="space-y-8">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {products.map((product) => {
-          const image = getProductImage(product.name)
           const averageRating = getAverageRating(product.reviews)
 
           return (
             <Card key={product.id} className="flex flex-col h-full overflow-hidden">
               <Link href={`/products/${product.id}`} className="block">
                 <div className="aspect-square w-full overflow-hidden">
-                  <Image
-                    src={image.src}
-                    alt={image.alt}
+                  <ProductImage 
+                    productName={product.name}
                     width={400}
                     height={400}
-                    className="object-cover w-full h-full transition-transform hover:scale-105"
-                    loading="lazy"
+                    className="w-full h-full transition-transform hover:scale-105"
                   />
                 </div>
               </Link>
