@@ -11,6 +11,21 @@
 - Testing & Deployment    🔄 50%
 - Post-Launch             🚧 0%
 
+## 🚀 Deployment Status
+
+The application is currently deployed at [https://ecommerce-rho-plum.vercel.app/](https://ecommerce-rho-plum.vercel.app/)
+
+### Recent Updates
+- Added improved error handling and debugging tools
+- Fixed OAuth configuration for Google sign-in
+- Added comprehensive deployment documentation
+- Implemented health check endpoints
+
+### Deployment Documentation
+For detailed deployment instructions, see [docs/deployment.md](docs/deployment.md)
+
+For OAuth setup instructions, see [docs/oauth-setup.md](docs/oauth-setup.md)
+
 ## 🌟 Features
 
 ### 🛍️ Core Features
