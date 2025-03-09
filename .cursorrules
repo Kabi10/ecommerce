@@ -108,6 +108,18 @@ Overall Progress: 79% Complete
 - Convert Prisma's Decimal to number using `Number(price)` to match expected types
 - Use union types for nullable fields (e.g., `string | null`)
 
+### 🔐 Environment Variable Management
+- Include both `AUTH_SECRET` and `NEXTAUTH_SECRET` for compatibility with different Auth.js versions
+- Always set `NEXTAUTH_URL` to match the deployment environment
+- Use `${VERCEL_URL}` for preview deployments in Vercel
+- Create debug endpoints (`/debug`, `/api/debug`) to verify environment configuration
+- Check for environment variable issues first when encountering server-side errors
+- Use `.env.example` to document all required variables without including actual secrets
+- Organize environment variables by category with comments for better readability
+- Never commit `.env` files with actual secrets to version control
+- Use different environment variables for different environments (development, preview, production)
+- Implement health check endpoints that verify database connections and environment setup
+
 ### 🧪 Testing Best Practices
 - Use `jest.resetAllMocks` (without parentheses) in beforeEach blocks when mocking Next.js hooks
 - Always use `bcryptjs` instead of `bcrypt` in tests to avoid native dependencies
@@ -200,7 +212,19 @@ Overall Progress: 79% Complete
    - Follow security templates
    - Implement auth patterns consistently
 
-9. Required Scripts in package.json:
+9. Environment Variable Management Rules:
+   - Verify all required variables before deployment
+   - Use consistent naming conventions across environments
+   - Include both `AUTH_SECRET` and `NEXTAUTH_SECRET` for compatibility
+   - Set environment-specific URLs for each environment
+   - Use `${VERCEL_URL}` for preview deployments
+   - Implement debug endpoints for environment verification
+   - Create comprehensive documentation for all variables
+   - Check for variable name mismatches when errors occur
+   - Use the debug page to verify environment configuration
+   - Maintain a deployment checklist for environment variables
+
+10. Required Scripts in package.json:
    ```json
    {
      "scripts": {
@@ -218,7 +242,7 @@ Overall Progress: 79% Complete
    }
    ```
 
-10. Development Acceleration Rules:
+11. Development Acceleration Rules:
     - Use template files for common components
     - Implement parallel testing strategies
     - Maintain snippet library for frequent patterns
@@ -347,6 +371,38 @@ types/
 | Category Images | • Map category names to specific images<br>• Maintain consistent aspect ratios<br>• Use quality={90} for hero images<br>• Implement proper fallbacks |
 | Performance | • Optimize with next/image<br>• Use proper sizing<br>• Enable caching<br>• Implement loading priority for hero images |
 | Accessibility | • Meaningful alt text<br>• Proper color contrast<br>• Loading indicators<br>• Fallback content |
+
+### Environment Variable Management Standards
+| Type | Requirements |
+|------|--------------|
+| Local Development | • Use `.env` for local variables<br>• Include `NEXTAUTH_SECRET` and `NEXTAUTH_URL`<br>• Set `NODE_ENV="development"`<br>• Use `http://localhost:3000` for URLs |
+| Documentation | • Maintain `.env.example` with all required variables<br>• Include comments explaining each variable<br>• Never include actual secrets in example files<br>• Document variable dependencies |
+| Production | • Configure all variables in Vercel dashboard<br>• Use environment-specific values<br>• Set `NEXTAUTH_URL` to production domain<br>• Use `${VERCEL_URL}` for preview deployments |
+| Security | • Never commit `.env` files with secrets<br>• Use `.gitignore` to exclude sensitive files<br>• Rotate secrets regularly<br>• Use different secrets for each environment |
+
+#### Required Environment Variables
+| Variable | Purpose | Required In |
+|----------|---------|-------------|
+| `DATABASE_URL` | Database connection string | All environments |
+| `NEXTAUTH_SECRET` | Authentication encryption key | All environments |
+| `NEXTAUTH_URL` | Base URL for authentication | All environments |
+| `NEXT_PUBLIC_APP_URL` | Public-facing application URL | All environments |
+| `GOOGLE_CLIENT_ID` | OAuth authentication | If using Google auth |
+| `GOOGLE_CLIENT_SECRET` | OAuth authentication | If using Google auth |
+| `GITHUB_CLIENT_ID` | OAuth authentication | If using GitHub auth |
+| `GITHUB_CLIENT_SECRET` | OAuth authentication | If using GitHub auth |
+| `STRIPE_SECRET_KEY` | Payment processing | If using Stripe |
+| `STRIPE_WEBHOOK_SECRET` | Payment webhooks | If using Stripe |
+| `RESEND_API_KEY` | Email service | If using Resend |
+| `UPLOADTHING_SECRET` | File uploads | If using Uploadthing |
+| `UPLOADTHING_APP_ID` | File uploads | If using Uploadthing |
+
+#### Environment File Structure
+```
+.env                  # Local development variables (NOT committed)
+.env.example          # Template with all required variables (committed)
+.env.production       # Production variables template (committed)
+```
 
 ### Image URL Structure
 ```typescript
@@ -596,6 +652,14 @@ Before creating any new file or component:
     [X] Production environment
     [X] Deployment process
     [X] Performance monitoring
+    [X] Environment variable configuration
+        [X] Set up NextAuth variables (NEXTAUTH_SECRET, NEXTAUTH_URL)
+        [X] Configure OAuth providers (Google, GitHub)
+        [X] Set up payment processing variables (Stripe)
+        [X] Configure email service (Resend)
+        [X] Create debug endpoints for environment verification
+        [X] Document environment variable requirements
+        [X] Implement environment-specific URL handling
 
 ### Phase 7: Post-Launch 🚧 (50% Complete)
 [X] 7.1. Monitoring and Maintenance
