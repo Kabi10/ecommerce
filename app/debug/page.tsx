@@ -1,5 +1,3 @@
-import { headers } from 'next/headers';
-
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
@@ -17,12 +15,6 @@ export default async function DebugPage() {
     hasUploadthing: !!(process.env.UPLOADTHING_SECRET && process.env.UPLOADTHING_APP_ID),
     hasStripe: !!(process.env.STRIPE_SECRET_KEY && process.env.STRIPE_WEBHOOK_SECRET),
   };
-
-  // Get request headers
-  const headersList = headers();
-  const userAgent = headersList.get('user-agent');
-  const host = headersList.get('host');
-  const referer = headersList.get('referer');
 
   // Test database connection
   let dbStatus = 'Not tested';
@@ -53,15 +45,6 @@ export default async function DebugPage() {
             <p className={dbStatus.includes('Error') ? 'text-red-500' : 'text-green-500'}>
               {dbStatus}
             </p>
-          </div>
-        </section>
-
-        <section className="border rounded-lg p-4">
-          <h2 className="text-xl font-semibold mb-3">Request Information</h2>
-          <div className="bg-gray-100 p-3 rounded">
-            <p><strong>Host:</strong> {host}</p>
-            <p><strong>User Agent:</strong> {userAgent}</p>
-            <p><strong>Referrer:</strong> {referer || 'None'}</p>
           </div>
         </section>
 
